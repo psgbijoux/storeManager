@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <context:annotation-config/>
+
+    <!-- DAO beans-->
+    <bean id="categoryDAO" class="com.storemanager.dao.impl.CategoryDAOImpl"/>
+    <bean id="logDAO" class="com.storemanager.dao.impl.LogDAOImpl"/>
+    <bean id="menuDAO" class="com.storemanager.dao.impl.MenuDAOImpl"/>
+    <bean id="productDAO" class="com.storemanager.dao.impl.ProductDAOImpl"/>
+    <bean id="roleDAO" class="com.storemanager.dao.impl.RoleDAOImpl"/>
+    <bean id="userDAO" class="com.storemanager.dao.impl.UserDAOImpl"/>
+    <bean id="xrefMenuRoleDAO" class="com.storemanager.dao.impl.XrefMenuRoleDAOImpl"/>
+    <bean id="saleDAO" class="com.storemanager.dao.impl.SaleDaoImpl"/>
+    <bean id="reportDAO" class="com.storemanager.dao.impl.ReportDAOImpl"/>
+    <bean id="settingsDAO" class="com.storemanager.dao.impl.SettingsDAOImpl"/>
+    <bean id="inventotyDAO" class="com.storemanager.dao.impl.InventoryDAOImpl"/>
+    <bean id="stockDAO" class="com.storemanager.dao.impl.StockDAOImpl"/>
+    <bean id="supplyDAO" class="com.storemanager.dao.impl.SupplyDAOImpl"/>
+    <bean id="zreportDAO" class="com.storemanager.dao.impl.ZReportDAOImpl"/>
+
+
+    <!-- Service beans-->
+    <bean id="categoryService" class="com.storemanager.service.CategoryService"/>
+    <bean id="userService" class="com.storemanager.service.UserService"/>
+    <bean id="menuService" class="com.storemanager.service.MenuService"/>
+    <bean id="productService" class="com.storemanager.service.ProductService"/>
+    <bean id="roleService" class="com.storemanager.service.RoleService"/>
+    <bean id="xrefMenuRoleService" class="com.storemanager.service.XrefMenuRoleService"/>
+    <bean id="saleService" class="com.storemanager.service.SaleService"/>
+    <bean id="reportService" class="com.storemanager.service.ReportService"/>
+    <bean id="settingsService" class="com.storemanager.service.SettingsService"/>
+    <bean id="inventoryService" class="com.storemanager.service.InventoryService"/>
+    <bean id="stockService" class="com.storemanager.service.StockService"/>
+    <bean id="supplyService" class="com.storemanager.service.SupplyService"/>
+    <bean id="zreportService" class="com.storemanager.service.ZReportService"/>
+</beans>

@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.pool_size">50</property>
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+
+        <property name="show_sql">false</property>
+        <property name="format_sql">true</property>
+        <property name="use_sql_comments">true</property>
+
+        <mapping class="com.storemanager.models.Inventory"/>
+        <mapping class="com.storemanager.models.Log"/>
+        <mapping class="com.storemanager.models.Category"/>
+        <mapping class="com.storemanager.models.Menu"/>
+        <mapping class="com.storemanager.models.Product"/>
+        <mapping class="com.storemanager.models.ProductUpdate"/>
+        <mapping class="com.storemanager.models.Report"/>
+        <mapping class="com.storemanager.models.Role"/>
+        <mapping class="com.storemanager.models.Sale"/>
+        <mapping class="com.storemanager.models.SaleDetail"/>
+        <mapping class="com.storemanager.models.User"/>
+        <mapping class="com.storemanager.models.XrefMenuRole"/>
+        <mapping class="com.storemanager.models.Settings"/>
+
+    </session-factory>
+</hibernate-configuration>
