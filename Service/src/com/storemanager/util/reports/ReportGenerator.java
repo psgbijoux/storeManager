@@ -29,13 +29,16 @@ public class ReportGenerator {
 
         addEmptyLine(document, 2);
 
-        PdfPTable table = new PdfPTable(reportData.getHeader().length);
+        PdfPTable table = new PdfPTable(reportData.getHeader().length + 3);
         table.setWidthPercentage(100f);
 
         for (int i = 0; i < reportData.getHeader().length; i++) {
             PdfPCell cell = new PdfPCell();
             Paragraph labelP = new Paragraph(reportData.getHeader()[i], BOLD);
             cell.addElement(labelP);
+            if (i <= 2) {
+                cell.setColspan(2);
+            }
             table.addCell(cell);
         }
 
@@ -44,6 +47,9 @@ public class ReportGenerator {
                 PdfPCell cell = new PdfPCell();
                 Paragraph labelP = new Paragraph(dataRow[i], PLAIN);
                 cell.addElement(labelP);
+                if (i <= 2) {
+                    cell.setColspan(2);
+                }
                 table.addCell(cell);
             }
         }

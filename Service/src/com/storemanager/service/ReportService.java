@@ -26,8 +26,8 @@ public class ReportService implements StoreService {
     }
 
     public void generateSaleReport(Date startDate, Date endDate) throws ServiceException {
-        String reportName = "Sales Report";
-        String[] header = {"Product", "Bare Code", "Date", "Quantity", "Unit Price", "Discount", "Discount Price", "Total Price"};
+        String reportName = "Raport Vanzare Detaliat";
+        String[] header = {"Nume Produs", "Cod de Bare", "Data", "Buc.", "Pret unitar", "Valoare totala", "Discount procent.", "Discount valoric", "Valoare finala"};
 
         SettingsService settingsService = ServiceLocator.getService(ServiceName.SETTINGS_SERVICE);
         String path = settingsService.loadSettings(SettingsEnum.REPORTS_FOLDER).getValue();
