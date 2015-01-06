@@ -38,11 +38,24 @@ public class ReportDAOImpl extends DAO implements ReportDAO {
 
                     BigDecimal productFullPrice = detail.getUnitPrice().multiply(new BigDecimal(detail.getQuantity()));
                     BigDecimal productDiscountPrice;
-                    if (!detail.getDiscountPrice().toString().equals("0.00")) {
-                        productDiscountPrice = productFullPrice.subtract(detail.getDiscountPrice());
-                        discount = discount.add(productDiscountPrice);
+
+                    if(detail.getWeight() == 0.0) {
+                        if (!detail.getDiscountPrice().toString().equals("0.00")) {
+                            productDiscountPrice = productFullPrice.subtract(detail.getDiscountPrice());
+                            discount = discount.add(productDiscountPrice);
+                        } else {
+                            productDiscountPrice = new BigDecimal(0.0);
+                        }
                     } else {
-                        productDiscountPrice = new BigDecimal(0.0);
+                        if (!detail.getDiscountPrice().toString().equals("0.00")) {
+                            productFullPrice = detail.getUnitPrice().multiply(new BigDecimal(detail.getWeight()));
+                            productFullPrice = productFullPrice.setScale(2, RoundingMode.HALF_UP);
+                            productDiscountPrice = productFullPrice.subtract(detail.getDiscountPrice());
+                            productDiscountPrice = productDiscountPrice.setScale(2, RoundingMode.HALF_UP);
+                            discount = discount.add(productDiscountPrice);
+                        } else {
+                            productDiscountPrice = new BigDecimal(0.0);
+                        }
                     }
 
                     String[] lineData = new String[9];
@@ -92,13 +105,27 @@ public class ReportDAOImpl extends DAO implements ReportDAO {
             for (Sale sale : result) {
                 for (SaleDetail detail : sale.getDetails()) {
 
+
                     BigDecimal productFullPrice = detail.getUnitPrice().multiply(new BigDecimal(detail.getQuantity()));
                     BigDecimal productDiscountPrice;
-                    if (!detail.getDiscountPrice().toString().equals("0.00")) {
-                        productDiscountPrice = productFullPrice.subtract(detail.getDiscountPrice());
-                        discount = discount.add(productDiscountPrice);
+
+                    if(detail.getWeight() == 0.0) {
+                        if (!detail.getDiscountPrice().toString().equals("0.00")) {
+                            productDiscountPrice = productFullPrice.subtract(detail.getDiscountPrice());
+                            discount = discount.add(productDiscountPrice);
+                        } else {
+                            productDiscountPrice = new BigDecimal(0.0);
+                        }
                     } else {
-                        productDiscountPrice = new BigDecimal(0.0);
+                        if (!detail.getDiscountPrice().toString().equals("0.00")) {
+                            productFullPrice = detail.getUnitPrice().multiply(new BigDecimal(detail.getWeight()));
+                            productFullPrice = productFullPrice.setScale(2, RoundingMode.HALF_UP);
+                            productDiscountPrice = productFullPrice.subtract(detail.getDiscountPrice());
+                            productDiscountPrice = productDiscountPrice.setScale(2, RoundingMode.HALF_UP);
+                            discount = discount.add(productDiscountPrice);
+                        } else {
+                            productDiscountPrice = new BigDecimal(0.0);
+                        }
                     }
 
                     String[] lineData = new String[9];
