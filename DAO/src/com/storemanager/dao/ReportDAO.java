@@ -11,5 +11,9 @@ public interface ReportDAO {
 
     public ReportData getSalesData(Date startDate, Date endDate) throws DAOException;
 
+    public ReportData getDiscountSalesData(Date date) throws DAOException;
+
+    public ReportData getDiscountSalesData(Date startDate, Date endDate) throws DAOException;
+
     public boolean store(Report report) throws DAOException;
 }

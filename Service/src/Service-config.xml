@@ -34,6 +34,7 @@
     <bean id="xrefMenuRoleService" class="com.storemanager.service.XrefMenuRoleService"/>
     <bean id="saleService" class="com.storemanager.service.SaleService"/>
     <bean id="reportService" class="com.storemanager.service.ReportService"/>
+    <bean id="discountReportService" class="com.storemanager.service.DiscountReportService"/>
     <bean id="settingsService" class="com.storemanager.service.SettingsService"/>
     <bean id="inventoryService" class="com.storemanager.service.InventoryService"/>
     <bean id="stockService" class="com.storemanager.service.StockService"/>

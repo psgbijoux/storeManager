@@ -13,6 +13,7 @@ public enum ServiceName {
     STOCK_SERVICE("stockService"),
     ZREPORT_SERVICE("zreportService"),
     REPORT_SERVICE("reportService"),
+    DISCOUNT_SERVICE("discountReportService"),
     SETTINGS_SERVICE("settingsService");
 
     private String beanName;

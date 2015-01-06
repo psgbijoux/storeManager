@@ -21,6 +21,7 @@ public enum MenuEnum {
     MANAGE_STOCK("manage_stock"),
     MANAGE_OUT_OF_STOCK("manage_out_of_stock"),
     MANAGE_SMART_SUPPLY("manage_smart_supply"),
+    MANAGE_DISCOUNT_REPORTS("manage_discount_reports"),
     MANAGE_SALE_REPORTS("manage_sale_reports");
 
     private String command;
