@@ -16,6 +16,8 @@
         <property name="use_sql_comments">true</property>
 
         <mapping class="com.storemanager.models.Inventory"/>
+        <mapping class="com.storemanager.models.InventoryFirst"/>
+        <mapping class="com.storemanager.models.InventorySec"/>
         <mapping class="com.storemanager.models.Log"/>
         <mapping class="com.storemanager.models.Category"/>
         <mapping class="com.storemanager.models.Menu"/>

@@ -87,7 +87,7 @@ public class InventoryScreen extends AbstractPanel {
         } else if (trigger.getCommand().equals(ButtonEnum.START.getCommand())) {
             InventoryService inventoryService = ServiceLocator.getService(ServiceName.INVENTORY_SERVICE);
             try {
-                inventoryService.clear();
+                inventoryService.clear("INVENTORY");
                 searchCode.setEnabled(true);
                 start.setVisible(false);
                 generate.setVisible(true);
@@ -97,7 +97,7 @@ public class InventoryScreen extends AbstractPanel {
         } else if (trigger.getCommand().equals(ButtonEnum.GENERATE.getCommand())) {
             InventoryService inventoryService = ServiceLocator.getService(ServiceName.INVENTORY_SERVICE);
             try {
-                inventoryService.generateInventoryReport();
+                inventoryService.generateInventoryReport("INVENTORY", null);
             } catch (ServiceException e1) {
                 Message.show(e1);
             }

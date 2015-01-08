@@ -70,8 +70,21 @@ public class MenuListener implements ActionListener {
         if (menuItem.getCommand().equals(MenuEnum.PRODUCT_HISTORY.getCommand())) {
             baseWindow.setContent(new ProductHistoryScreen(baseWindow));
         }
+
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
             baseWindow.setContent(new InventoryScreen(baseWindow));
+        }
+        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
+            baseWindow.setContent(new InventoryScreen(baseWindow));
+        }
+        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
+            baseWindow.setContent(new InventoryScreen(baseWindow));
+        }
+        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY_FIRST.getCommand())) {
+            baseWindow.setContent(new InventoryFirstCatScreen(baseWindow));
+        }
+        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY_SECOND.getCommand())) {
+            baseWindow.setContent(new InventorySecondCatScreen(baseWindow));
         }
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_SUPPLY.getCommand())) {
             baseWindow.setContent(new SupplyScreen(baseWindow));

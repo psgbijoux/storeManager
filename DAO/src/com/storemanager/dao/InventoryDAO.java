@@ -1,20 +1,20 @@
 package com.storemanager.dao;
 
-import com.storemanager.models.Inventory;
-import com.storemanager.models.InventoryReport;
+import com.storemanager.models.*;
 import com.storemanager.util.DAOException;
 
 import java.util.List;
 
-/**
- * Author: Lucian Moldovan
- * Date: 2/2/13
- * Time: 4:34 PM
- */
 public interface InventoryDAO {
     public boolean add(Inventory inventory) throws DAOException;
 
-    public boolean clear() throws DAOException;
+    public boolean addFirst(InventoryFirst inventoryFirst) throws DAOException;
 
-    public List<InventoryReport> getInventoryResult() throws DAOException;
+    public boolean addSecond(InventorySec inventorySec) throws DAOException;
+
+    public boolean clear(String type) throws DAOException;
+
+    public List<InventoryReport> getInventoryResult(String type) throws DAOException;
+
+    public List<InventoryReport> getCategoryInventoryResult(String type, Category category) throws DAOException;
 }

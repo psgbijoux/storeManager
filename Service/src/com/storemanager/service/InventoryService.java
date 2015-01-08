@@ -1,12 +1,10 @@
 package com.storemanager.service;
 
 import com.storemanager.dao.InventoryDAO;
-import com.storemanager.dao.impl.InventoryDAOImpl;
 import com.storemanager.dao.ReportDAO;
+import com.storemanager.dao.impl.InventoryDAOImpl;
 import com.storemanager.dao.impl.ReportDAOImpl;
-import com.storemanager.models.Inventory;
-import com.storemanager.models.InventoryReport;
-import com.storemanager.models.Report;
+import com.storemanager.models.*;
 import com.storemanager.util.DAOException;
 import com.storemanager.util.ServiceException;
 import com.storemanager.util.SettingsEnum;
@@ -42,18 +40,38 @@ public class InventoryService implements StoreService {
         }
     }
 
-    public void clear() throws ServiceException {
+    public void addInventoryFirst(InventoryFirst inventory) throws ServiceException {
         try {
-            dao.clear();
+            dao.addFirst(inventory);
+        } catch (DAOException e) {
+            throw new ServiceException("Error adding Inventory entry for product: " + inventory.getProductName());
+        }
+    }
+
+    public void addInventorySecond(InventorySec inventory) throws ServiceException {
+        try {
+            dao.addSecond(inventory);
+        } catch (DAOException e) {
+            throw new ServiceException("Error adding Inventory entry for product: " + inventory.getProductName());
+        }
+    }
+
+    public void clear(String inventoryType) throws ServiceException {
+        try {
+            dao.clear(inventoryType);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }
     }
 
-    public void generateInventoryReport() throws ServiceException {
+    public void generateInventoryReport(String inventoryType, Category category) throws ServiceException {
         List<InventoryReport> data = null;
         try {
-            data = dao.getInventoryResult();
+            if (category != null) {
+                data = dao.getCategoryInventoryResult(inventoryType, category);
+            } else {
+                data = dao.getInventoryResult(inventoryType);
+            }
         } catch (DAOException e) {
             throw new ServiceException("Error retrieving inventory report data.");
         }
