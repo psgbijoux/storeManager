@@ -30,9 +30,9 @@ import java.util.List;
 public class ProductScreen extends AbstractPanel implements ItemListener {
     private StoreLogger logger = StoreLogger.getInstance(ProductScreen.class);
     private Window baseWindow;
-    private JButton close, add, edit, cancel, save, delete, browse, print;
+    private JButton close, add, edit, cancel, save, delete, browse, print, barcode, refresh;
     private JPanel editPanel;
-    private JTextField name, code, price, quantity, description, imagePath, weight, printCount, alertValue, bareCodeValue;
+    private JTextField name, code, price, quantity, description, imagePath, weight, printCount, alertValue, bareCodeValue, bcSearch;
     private JCheckBox alertFlag, bareCodeFlag;
     private JComboBox<Role> categoryBox;
     private JScrollPane scrollPane;
@@ -51,9 +51,14 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
         this.setLayout(null);
 
         close = new ImageButton(ButtonEnum.CLOSE, this);
-        close.setLocation(760, 530);
+        close.setLocation(740, 540);
         close.setSize(ButtonSizeEnum.DEFAULT.getSize());
         this.add(close);
+
+        refresh = new ImageButton(ButtonEnum.REFRESH, this);
+        refresh.setLocation(570, 540);
+        refresh.setSize(ButtonSizeEnum.DEFAULT.getSize());
+        this.add(refresh);
 
         //action buttons
         add = new ImageButton(ButtonEnum.ADD, this);
@@ -70,6 +75,11 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
         delete.setLocation(760, 30);
         delete.setSize(ButtonSizeEnum.DEFAULT.getSize());
         this.add(delete);
+
+        barcode = new ImageButton(ButtonEnum.BARCODESEARCH, this);
+        barcode.setLocation(340, 540);
+        barcode.setSize(ButtonSizeEnum.DEFAULT.getSize());
+        this.add(barcode);
 
         //role ddl
         JLabel roleLabel = new JLabel("Category:");
@@ -88,6 +98,16 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
         categoryBox.addActionListener(this);
         this.add(categoryBox);
 
+        JLabel barcodeLabel = new JLabel("Barcode:");
+        barcodeLabel.setBounds(30, 520, 100, 25);
+        this.add(barcodeLabel);
+
+        bcSearch = new JTextField();
+        bcSearch.setLocation(30, 540);
+        bcSearch.setSize(300, 40);
+        bcSearch.setFont(new Font(bcSearch.getFont().getName(), Font.PLAIN, 30));
+        this.add(bcSearch);
+
         Category category = (Category) categoryBox.getSelectedItem();
         loadProducts(category.getId());
     }
@@ -102,6 +122,7 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
         tableModel.addColumn("ID");
         tableModel.addColumn("Name");
         tableModel.addColumn("Code");
+        tableModel.addColumn("Barcode");
         tableModel.addColumn("Price");
         tableModel.addColumn("Quantity");
         final ProductService service = ServiceLocator.getService(ServiceName.PRODUCT_SERVICE);
@@ -112,22 +133,25 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
             Message.show(e);
         }
         for (Product product : products) {
-            Object[] data = new Object[5];
+            Object[] data = new Object[6];
             data[0] = product.getId();
             data[1] = product.getName();
             data[2] = product.getCode();
-            data[3] = product.getPrice();
-            data[4] = product.getQuantity();
+            data[3] = product.getBareCode();
+            data[4] = product.getPrice();
+            data[5] = product.getQuantity();
             tableModel.addRow(data);
         }
         table = new JTable(tableModel);
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.getColumnModel().getColumn(0).setPreferredWidth(30);
-        table.getColumnModel().getColumn(1).setPreferredWidth(147);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(60);
+        table.getColumnModel().getColumn(0).setPreferredWidth(35);
+        table.getColumnModel().getColumn(1).setPreferredWidth(80);
+        table.getColumnModel().getColumn(2).setPreferredWidth(120);
+        table.getColumnModel().getColumn(3).setPreferredWidth(110);
         table.getColumnModel().getColumn(4).setPreferredWidth(60);
+        table.getColumnModel().getColumn(5).setPreferredWidth(30);
+
 
         if (scrollPane != null) {
             this.remove(scrollPane);
@@ -164,7 +188,7 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
             }
         });
         scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(30, 70, 420, 500);
+        scrollPane.setBounds(20, 70, 450, 440);
         this.add(scrollPane);
         this.repaint();
     }
@@ -383,23 +407,35 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
         }
         ProductService service = ServiceLocator.getService(ServiceName.PRODUCT_SERVICE);
         if (e.getSource() instanceof JButton && (JButton) e.getSource() == print) {
-            int index = table.getSelectedRow();
-            if (index >= 0) {
-                int id = Integer.parseInt(table.getValueAt(index, 0).toString());
-                Product product = null;
+            if ("EDIT".equals(command) || "ADD".equals(command)) {
+                int index = table.getSelectedRow();
+                if (index >= 0) {
+                    int id = Integer.parseInt(table.getValueAt(index, 0).toString());
+                    Product product = null;
+                    try {
+                        product = service.load(id);
+                    } catch (ServiceException e1) {
+                        Message.show(e1);
+                    }
+                    int count = 0;
+                    try {
+                        count = Integer.parseInt(printCount.getText());
+                    } catch (NumberFormatException nfe) {
+                        logger.error("Error parsing label count: " + nfe.getMessage());
+                        JOptionPane.showMessageDialog(null, "Invalid for print label number.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    PrintUtil.printLabel(product, count);
+                }
+            } else if ("SEARCH".equals(command)) {
                 try {
-                    product = service.load(id);
+                    Product product = service.getProductByBarCode(editedProduct.getBareCode());
+
+                    int count = Integer.parseInt(printCount.getText());
+                    PrintUtil.printLabel(product, count);
+
                 } catch (ServiceException e1) {
-                    Message.show(e1);
+                   JOptionPane.showMessageDialog(null, "Invalid for print label number", "Validation Error", JOptionPane.ERROR_MESSAGE);  //To change body of catch statement use File | Settings | File Templates.
                 }
-                int count = 0;
-                try {
-                    count = Integer.parseInt(printCount.getText());
-                } catch (NumberFormatException nfe) {
-                    logger.error("Error parsing label count: " + nfe.getMessage());
-                    JOptionPane.showMessageDialog(null, "Invalid for print label number.", "Validation Error", JOptionPane.ERROR_MESSAGE);
-                }
-                PrintUtil.printLabel(product, count);
             } else {
                 JOptionPane.showMessageDialog(null, "Select a product first.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -482,6 +518,30 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
         if (trigger.getCommand().equals(ButtonEnum.CANCEL.getCommand())) {
             this.remove(editPanel);
             this.repaint();
+        }
+
+        if (trigger.getCommand().equals(ButtonEnum.REFRESH.getCommand())) {
+            loadProducts(category.getId());
+            this.repaint();
+        }
+
+        if (trigger.getCommand().equals(ButtonEnum.BARCODESEARCH.getCommand())) {
+            try {
+                String barcodeStr = bcSearch.getText();
+                if (barcodeStr == "") {
+                    JOptionPane.showMessageDialog(null, "Enter Barcode!");
+                } else {
+                    Product product = service.getProductByBarCode(barcodeStr);
+
+                    command = "SEARCH";
+                    edit(product);
+                    editedProduct = product.clone();
+
+                    bcSearch.setText("");
+                }
+            } catch (ServiceException e1) {
+                JOptionPane.showMessageDialog(null, "Product not found!");
+            }
         }
 
         if (trigger.getCommand().equals(ButtonEnum.SAVE.getCommand())) {
@@ -645,8 +705,63 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
                         JOptionPane.showMessageDialog(null, se.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+            } else if ("SEARCH".equals(command)) {
+                try {
+                    Product product = service.getProductByBarCode(editedProduct.getBareCode());
+
+                    product.setName(name.getText());
+                    product.setDescription(description.getText());
+                    product.setCode(code.getText());
+                    product.setGold(gold.isSelected());
+                    product.setOther(other.isSelected());
+                    product.setAlertFlag(alertFlag.isSelected());
+                    product.setAlertValue(alertValue.getText());
+
+                    if (other.isSelected()) {
+                        product.setQuantity(Integer.parseInt(quantity.getText()));
+                        product.setWeight(0.0);
+                        BigDecimal priceValue = new BigDecimal(price.getText());
+                        priceValue = priceValue.setScale(2, RoundingMode.HALF_UP);
+                        product.setPrice(priceValue);
+                    } else {
+                        product.setPrice(new BigDecimal(0));
+                        BigDecimal weightValue = new BigDecimal(weight.getText());
+                        weightValue = weightValue.setScale(2, RoundingMode.HALF_UP);
+                        product.setWeight(weightValue.doubleValue());
+                        product.setQuantity(1);
+                    }
+
+                    BufferedImage image = null;
+                    if (!Strings.isEmpty(imagePath.getText())) {
+                        File file = new File(imagePath.getText());
+                        try {
+                            image = ImageIO.read(file);
+                        } catch (Exception ex) {
+                            logger.error("Error loading image: " + ex.getMessage());
+                            JOptionPane.showMessageDialog(null, "Error loading image file from disk.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+
+                    ProductUpdate iu = new ProductUpdate();
+                    iu.setAddDate(new Date());
+                    iu.setOperation(UPDATE);
+                    if (other.isSelected()) {
+                        iu.setQuantity(product.getQuantity() - editedProduct.getQuantity());
+                        iu.setWeight(0.0);
+                    } else {
+                        iu.setWeight(product.getWeight() - editedProduct.getWeight());
+                        iu.setQuantity(0);
+                    }
+                    iu.setProductId(product.getId());
+
+                    service.update(product, image);
+                    service.storeProductUpdate(iu);
+
+                } catch (ServiceException se) {
+                    JOptionPane.showMessageDialog(null, se.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            loadProducts(category.getId());
+            //loadProducts(category.getId());
             //this.remove(editPanel);
             this.repaint();
         }
