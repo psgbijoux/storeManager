@@ -17,6 +17,8 @@ public enum MenuEnum {
     MANAGE_INVENTORY("manage_inventory"),
     MANAGE_INVENTORY_FIRST("manage_inventory_first"),
     MANAGE_INVENTORY_SECOND("manage_inventory_second"),
+    INVENTORY_REPORT_GOLD("inventory_report_gold"),
+    INVENTORY_REPORT_PRODUCTS("inventory_report_products"),
     MANAGE_SUPPLY("manage_supply"),
     MANAGE_SALES("manage_sales"),
     MANAGE_ZREPORT("manage_zreport"),

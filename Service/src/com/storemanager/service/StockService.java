@@ -34,7 +34,8 @@ public class StockService implements StoreService {
     public void generateStockReport() throws ServiceException {
         List<StockReport> data = null;
         try {
-            data = dao.getStockOnCategories();
+            boolean onlyGold = false;
+            data = dao.getStockOnCategories(onlyGold);
         } catch (DAOException e) {
             throw new ServiceException("Error retrieving stock report data.");
         }

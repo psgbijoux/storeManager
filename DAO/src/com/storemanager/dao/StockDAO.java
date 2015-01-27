@@ -6,5 +6,7 @@ import com.storemanager.util.DAOException;
 import java.util.List;
 
 public interface StockDAO {
-    public List<StockReport> getStockOnCategories() throws DAOException;
+    public List<StockReport> getStockOnCategories(Boolean onlyGold) throws DAOException;
+
+    public List<String[]> getStockOnProducts() throws DAOException;
 }

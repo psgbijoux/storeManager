@@ -10,6 +10,7 @@ import com.storemanager.screens.reports.DiscountReportScreen;
 import com.storemanager.screens.reports.ReportsScreen;
 import com.storemanager.screens.sales.SalesScreen;
 import com.storemanager.screens.settings.*;
+import com.storemanager.service.InventoryService;
 import com.storemanager.service.ServiceLocator;
 import com.storemanager.service.ServiceName;
 import com.storemanager.service.StockService;
@@ -86,6 +87,24 @@ public class MenuListener implements ActionListener {
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY_SECOND.getCommand())) {
             baseWindow.setContent(new InventorySecondCatScreen(baseWindow));
         }
+
+        if (menuItem.getCommand().equals(MenuEnum.INVENTORY_REPORT_GOLD.getCommand())) {
+            InventoryService service = ServiceLocator.getService(ServiceName.INVENTORY_SERVICE);
+            try {
+                service.generateGoldInventoryReport();
+            } catch (ServiceException e1) {
+                Message.show(e1);
+            }
+        }
+        if (menuItem.getCommand().equals(MenuEnum.INVENTORY_REPORT_PRODUCTS.getCommand())) {
+            InventoryService service = ServiceLocator.getService(ServiceName.INVENTORY_SERVICE);
+            try {
+                service.generateProductsInventoryReport();
+            } catch (ServiceException e1) {
+                Message.show(e1);
+            }
+        }
+
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_SUPPLY.getCommand())) {
             baseWindow.setContent(new SupplyScreen(baseWindow));
         }

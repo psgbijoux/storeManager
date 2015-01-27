@@ -144,9 +144,9 @@ public class InventorySecondCatScreen extends AbstractPanel {
 
             //insert in inventory table
             InventoryService inventoryService = ServiceLocator.getService(ServiceName.INVENTORY_SERVICE);
-            InventoryFirst inventory = new InventoryFirst(product);
+            InventorySec inventory = new InventorySec(product);
             try {
-                inventoryService.addInventoryFirst(inventory);
+                inventoryService.addInventorySecond(inventory);
             } catch (ServiceException e1) {
                 Message.show(e1);
             }
