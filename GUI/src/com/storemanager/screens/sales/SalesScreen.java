@@ -32,8 +32,8 @@ public class SalesScreen extends AbstractPanel {
     private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getSize().width - 40;
     private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getSize().height - 100;
 
-    private JButton close, edit, cancel, update, delete, checkout, checkoutCard, clearSearch;
-    private JTextField searchCode, quantity, name, code, unitPrice, price, description, stock, discount;
+    private JButton close, edit, cancel, update, delete, checkout, checkoutCard, clearSearch, tipsCheckout;
+    private JTextField searchCode, quantity, name, code, unitPrice, price, description, stock, discount, tips;
     private JLabel quantityLabel, unitPriceLabel, discountLabel;
     private JPanel searchPanel, searchPanelBtn, editPanel, imagePanel, actionPanel;
     private JScrollPane scrollPane;
@@ -237,33 +237,46 @@ public class SalesScreen extends AbstractPanel {
     private void createActionsPanel() {
         actionPanel = new JPanel();
         actionPanel.setLayout(null);
-        actionPanel.setBounds(screenWidth - 370, 400, 350, 200);
+        actionPanel.setBounds(screenWidth - 370, 400, 350, 205);
         actionPanel.setBackground(Color.lightGray);
 
         ActionPanelListener listener = new ActionPanelListener();
         edit = new ImageButton(ButtonEnum.EDIT, this);
-        edit.setLocation(20, 20);
+        edit.setLocation(20, 10);
         edit.addActionListener(listener);
-        edit.setSize(ButtonSizeEnum.LARGE.getSize());
+        edit.setSize(ButtonSizeEnum.LARGE_CHECKOUT.getSize());
         actionPanel.add(edit);
 
         delete = new ImageButton(ButtonEnum.DELETE, this);
-        delete.setLocation(180, 20);
-        delete.setSize(ButtonSizeEnum.LARGE.getSize());
+        delete.setLocation(180, 10);
+        delete.setSize(ButtonSizeEnum.LARGE_CHECKOUT.getSize());
         delete.addActionListener(listener);
         actionPanel.add(delete);
 
         checkout = new ImageButton(ButtonEnum.CHECKOUT, this);
-        checkout.setLocation(5, 100);
-        checkout.setSize(ButtonSizeEnum.EXTRA_LARGE.getSize());
+        checkout.setLocation(5, 65);
+        checkout.setSize(ButtonSizeEnum.EXTRA_LARGE_CHECKOUT.getSize());
         checkout.addActionListener(listener);
         actionPanel.add(checkout);
 
         checkoutCard = new ImageButton(ButtonEnum.CHECKCARD, this);
-        checkoutCard.setLocation(180, 100);
-        checkoutCard.setSize(ButtonSizeEnum.EXTRA_LARGE.getSize());
+        checkoutCard.setLocation(180, 65);
+        checkoutCard.setSize(ButtonSizeEnum.EXTRA_LARGE_CHECKOUT.getSize());
         checkoutCard.addActionListener(listener);
         actionPanel.add(checkoutCard);
+
+        tipsCheckout = new ImageButton(ButtonEnum.CHECKOUT_TIPS, this);
+        tipsCheckout.setLocation(180, 135);
+        tipsCheckout.setSize(ButtonSizeEnum.EXTRA_LARGE_CHECKOUT.getSize());
+        tipsCheckout.addActionListener(listener);
+        actionPanel.add(tipsCheckout);
+
+        Font newFieldFont = new Font(searchCode.getFont().getName(), searchCode.getFont().getStyle(), 30);
+        tips = new JTextField();
+        tips.setBounds(10, 140, 155, 50);
+        tips.setFont(newFieldFont);
+        tips.getDocument().addDocumentListener(new QuantityListener());
+        actionPanel.add(tips);
 
         this.add(actionPanel);
         this.repaint();
@@ -528,6 +541,7 @@ public class SalesScreen extends AbstractPanel {
             searchCode.requestFocus();
         } else if (trigger.getCommand().equals(ButtonEnum.CLEAR_SEARCH.getCommand())) {
             searchCode.setText("");
+            tips.setText("");
             editProduct(null);
             isUpdateProduct = false;
             searchCode.requestFocus();
@@ -700,6 +714,17 @@ public class SalesScreen extends AbstractPanel {
                 editProduct(null);
                 refreshProductList();
                 searchCode.requestFocus();
+            } else if (button.getCommand().equals(ButtonEnum.CHECKOUT_TIPS.getCommand())) {
+                try {
+                    String tipsStr = tips.getText();
+                    if (!Strings.isEmpty(tipsStr)) {
+                        service.createTipsPrint(tipsStr);
+                    } else {
+                        Message.showError("Nu ati setat valoarea pentru bacsis!");
+                    }
+                } catch (ServiceException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
             }
         }
     }

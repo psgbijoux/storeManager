@@ -60,6 +60,19 @@ public class SaleService implements StoreService {
         this.productList.clear();
     }
 
+    public void createTipsPrint(String tipsStr) throws ServiceException {
+
+        try {
+            Double tipsDouble = Double.parseDouble(tipsStr);
+
+            generateCashRegisterFileForTips(tipsDouble);
+            printReceipt();
+
+        } catch (NumberFormatException ex) {
+            throw new ServiceException("Valoare incorecta pentru bacsis!");
+        }
+    }
+
     public void createSale(User user, Date addDate, boolean cash) throws ServiceException {
 
         //generate cash register file
@@ -152,6 +165,29 @@ public class SaleService implements StoreService {
                     out.newLine();
                 }
             }
+            out.write("3");
+            out.close();
+        } catch (Exception e) {
+            throw new ServiceException("There was an error while generating the receipt.");
+        }
+    }
+
+    private void generateCashRegisterFileForTips(Double tips) throws ServiceException {
+
+        tips = tips*100;
+
+        try {
+            File path = new File(CASH_REGISTER_OUT_PATH);
+            if (!path.exists()) {
+                path.mkdir();
+            }
+            File outFile = new File(path + "\\" + CASH_REGISTER_OUT_FILE);
+            FileWriter fileWriter = new FileWriter(outFile);
+            BufferedWriter out = new BufferedWriter(fileWriter);
+
+            out.write(String.format("1;Bacsis;3;5;2;%d;%d;0", tips.intValue(), 1000));
+            out.newLine();
+
             out.write("3");
             out.close();
         } catch (Exception e) {

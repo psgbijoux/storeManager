@@ -18,8 +18,9 @@ public enum ButtonEnum {
     CLEAR_SEARCH("", "GUI/resources/buttons48/clearSearch.png", "btn_clear_search"),
     START("START", "GUI/resources/buttons48/start.png", "btn_start"),
     PREVIEW("PreView", "GUI/resources/buttons32/preview.png", "btn_preview"),
-    CHECKOUT("Checkout", "GUI/resources/buttons64/checkout.png", "btn_checkout"),
-    CHECKCARD("Card Check", "GUI/resources/buttons64/checkout.png", "btn_checkout_card");
+    CHECKOUT("Plata numerar", "GUI/resources/buttons64/checkout.png", "btn_checkout"),
+    CHECKOUT_TIPS("Bacsis", "GUI/resources/buttons64/checkout.png", "btn_checkout_tips"),
+    CHECKCARD("Plata Card", "GUI/resources/buttons64/checkout.png", "btn_checkout_card");
 
     private String imagePath;
     private String name;
