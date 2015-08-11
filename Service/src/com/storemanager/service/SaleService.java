@@ -229,7 +229,7 @@ public class SaleService implements StoreService {
             //out.write("3");
             out.close();
         } catch (Exception e) {
-            throw new ServiceException("There was an error while generating the receipt.");
+            throw  new ServiceException("There was an error while generating the receipt.");
         }
     }
 
