@@ -38,7 +38,7 @@ public class InventoryProductsReportGenerator {
             table = new PdfPTable(27);
             table.setWidthPercentage(100f);
 
-            createHeader(table);
+            createHeader(table, String.valueOf(i+1));
             if (i == (reportData.size()/30)) {
                 for(int j=0; j<reportData.size()%30 ; j++) {
                     createContentRow(table, reportData.get(i*30+j), i*30+j+1);
@@ -62,15 +62,15 @@ public class InventoryProductsReportGenerator {
         }
     }
 
-    private static void createHeader(PdfPTable table) {
+    private static void createHeader(PdfPTable table, String page) {
 
         table.addCell(createCell(7, 1, BOLD, 0, "Unitatea S.C. P.S.G. COM S.R.L."));
-        table.addCell(createCell(12,2, BOLD, 1, "LISTA DE INVENTARIERE\nDATA 31.12.2014"));
+        table.addCell(createCell(12,2, BOLD, 1, "LISTA DE INVENTARIERE\nDATA 31.12.2015"));
         table.addCell(createCell(6, 1, BOLD, 0, "Gestiunea 1"));
         table.addCell(createCell(2, 1, BOLD, 1, "Pagina"));
         table.addCell(createCell(7, 1, BOLD, 0, "Magazin Memorandumului 12"));
         table.addCell(createCell(6, 1, BOLD, 0, "Loc de depozitare: magazin"));
-        table.addCell(createCell(2, 1, BOLD, 1, "1"));
+        table.addCell(createCell(2, 1, BOLD, 1, page));
         table.addCell(createCell(1, 3, BOLD, 1, "Nr.\ncrt."));
         table.addCell(createCell(6, 3, BOLD, 1, "DENUMIREA\nBUNURILOR\nINVENTARIATE"));
         table.addCell(createCell(3, 3, BOLD, 1, "COD\nsau\nNR.INV."));
