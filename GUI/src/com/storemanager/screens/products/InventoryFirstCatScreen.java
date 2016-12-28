@@ -38,7 +38,7 @@ public class InventoryFirstCatScreen extends AbstractPanel {
         close.setSize(ButtonSizeEnum.DEFAULT.getSize());
         this.add(close);
 
-        JLabel label = new JLabel("Bare Code:");
+        JLabel label = new JLabel("1: Bare Code:");
         Font newLabelFont = new Font(label.getFont().getName(), label.getFont().getStyle(), 20);
         label.setFont(newLabelFont);
         label.setBounds(190, 20, 250, 35);

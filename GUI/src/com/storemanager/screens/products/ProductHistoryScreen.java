@@ -116,6 +116,7 @@ public class ProductHistoryScreen extends AbstractPanel implements ItemListener 
         tableModel.addColumn("ID");
         tableModel.addColumn("Name");
         tableModel.addColumn("Code");
+        tableModel.addColumn("BarCode");
         tableModel.addColumn("Price");
         tableModel.addColumn("Quantity");
         final ProductService service = ServiceLocator.getService(ServiceName.PRODUCT_SERVICE);
@@ -126,22 +127,24 @@ public class ProductHistoryScreen extends AbstractPanel implements ItemListener 
             Message.show(e);
         }
         for (Product product : products) {
-            Object[] data = new Object[5];
+            Object[] data = new Object[6];
             data[0] = product.getId();
             data[1] = product.getName();
             data[2] = product.getCode();
-            data[3] = product.getPrice();
-            data[4] = product.getQuantity();
+            data[3] = product.getBareCode();
+            data[4] = product.getPrice();
+            data[5] = product.getQuantity();
             tableModel.addRow(data);
         }
         table = new JTable(tableModel);
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.getColumnModel().getColumn(0).setPreferredWidth(50);
-        table.getColumnModel().getColumn(1).setPreferredWidth(147);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(60);
+        table.getColumnModel().getColumn(0).setPreferredWidth(40);
+        table.getColumnModel().getColumn(1).setPreferredWidth(80);
+        table.getColumnModel().getColumn(2).setPreferredWidth(110);
+        table.getColumnModel().getColumn(3).setPreferredWidth(110);
         table.getColumnModel().getColumn(4).setPreferredWidth(60);
+        table.getColumnModel().getColumn(5).setPreferredWidth(30);
 
         if (scrollPane != null) {
             this.remove(scrollPane);
@@ -178,7 +181,7 @@ public class ProductHistoryScreen extends AbstractPanel implements ItemListener 
             }
         });
         scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(30, 60, 420, 275);
+        scrollPane.setBounds(20, 70, 440, 270);
         this.add(scrollPane);
         this.repaint();
     }
@@ -610,10 +613,11 @@ public class ProductHistoryScreen extends AbstractPanel implements ItemListener 
                 if (barcodeStr == "") {
                     JOptionPane.showMessageDialog(null, "Enter Barcode!");
                 } else {
-                    Product product = service.getProductByBarCode(barcodeStr);
+                    Product product = service.getProductByCode(barcodeStr);
 
                     loadSupplyHistory(product);
                     loadSaleHistory(product);
+                    edit(product);
 
                     bcSearch.setText("");
                 }

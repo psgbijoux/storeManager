@@ -546,7 +546,7 @@ public class OutOfStockScreen extends AbstractPanel implements ItemListener {
             if (bareCode.length() == 8 || bareCode.length() > 12) {
                 ProductService service = ServiceLocator.getService(ServiceName.PRODUCT_SERVICE);
                 try {
-                    Product product = service.getProductByBarCode(bareCode);
+                    Product product = service.getProductByCode(bareCode);
                     edit(product);
                     quantity.requestFocus();
                 } catch (ServiceException e1) {

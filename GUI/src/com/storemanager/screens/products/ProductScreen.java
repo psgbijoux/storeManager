@@ -145,9 +145,9 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
         table = new JTable(tableModel);
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.getColumnModel().getColumn(0).setPreferredWidth(35);
+        table.getColumnModel().getColumn(0).setPreferredWidth(40);
         table.getColumnModel().getColumn(1).setPreferredWidth(80);
-        table.getColumnModel().getColumn(2).setPreferredWidth(120);
+        table.getColumnModel().getColumn(2).setPreferredWidth(110);
         table.getColumnModel().getColumn(3).setPreferredWidth(110);
         table.getColumnModel().getColumn(4).setPreferredWidth(60);
         table.getColumnModel().getColumn(5).setPreferredWidth(30);
@@ -428,7 +428,7 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
                 }
             } else if ("SEARCH".equals(command)) {
                 try {
-                    Product product = service.getProductByBarCode(editedProduct.getBareCode());
+                    Product product = service.getProductByCode(editedProduct.getBareCode());
 
                     int count = Integer.parseInt(printCount.getText());
                     PrintUtil.printLabel(product, count);
@@ -531,7 +531,7 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
                 if (barcodeStr == "") {
                     JOptionPane.showMessageDialog(null, "Enter Barcode!");
                 } else {
-                    Product product = service.getProductByBarCode(barcodeStr);
+                    Product product = service.getProductByCode(barcodeStr);
 
                     command = "SEARCH";
                     edit(product);
@@ -707,7 +707,7 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
                 }
             } else if ("SEARCH".equals(command)) {
                 try {
-                    Product product = service.getProductByBarCode(editedProduct.getBareCode());
+                    Product product = service.getProductByCode(editedProduct.getBareCode());
 
                     product.setName(name.getText());
                     product.setDescription(description.getText());
