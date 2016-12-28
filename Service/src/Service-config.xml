@@ -40,4 +40,7 @@
     <bean id="stockService" class="com.storemanager.service.StockService"/>
     <bean id="supplyService" class="com.storemanager.service.SupplyService"/>
     <bean id="zreportService" class="com.storemanager.service.ZReportService"/>
+
+    <!-- Process beans-->
+    <bean id="productUpdatesProcess" class="com.storemanager.util.processes.ProductsUpdateProcess"/>
 </beans>

@@ -4,24 +4,30 @@ import com.storemanager.models.Product;
 import com.storemanager.models.ProductUpdate;
 import com.storemanager.util.DAOException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ProductDAO {
-    public boolean store(Product product) throws DAOException;
 
-    public boolean delete(Product product) throws DAOException;
+    boolean store(Product product) throws DAOException;
 
-    public List<Product> getProductByCategoryId(int categoryId) throws DAOException;
+    boolean delete(Product product) throws DAOException;
 
-    public List<Product> getOutOfStockProductByCategoryId(int categoryId) throws DAOException;
+    List<Product> getProductByCategoryId(int categoryId) throws DAOException;
 
-    public Product loadProduct(int productId) throws DAOException;
+    List<Product> getOutOfStockProductByCategoryId(int categoryId) throws DAOException;
 
-    public Product getProductByBarCode(String barCode) throws DAOException;
+    Product loadProduct(int productId) throws DAOException;
 
-    public Integer getBareCodeCount() throws DAOException;
+    Product getProductByBarCode(String barCode) throws DAOException;
 
-    public boolean storeProductUpdate(ProductUpdate productUpdate) throws DAOException;
+    Product getProductByCode(String code) throws DAOException;
 
-    public List<ProductUpdate> getProductUpdates(Product product) throws DAOException;
+    Integer getBareCodeCount() throws DAOException;
+
+    boolean storeProductUpdate(ProductUpdate productUpdate) throws DAOException;
+
+    List<ProductUpdate> getProductUpdates(Product product) throws DAOException;
+
+    void updateProductDescription(ArrayList<String> barCodes, ArrayList<String> supplyCodes);
 }

@@ -10,13 +10,11 @@ import com.storemanager.screens.reports.DiscountReportScreen;
 import com.storemanager.screens.reports.ReportsScreen;
 import com.storemanager.screens.sales.SalesScreen;
 import com.storemanager.screens.settings.*;
-import com.storemanager.service.InventoryService;
-import com.storemanager.service.ServiceLocator;
-import com.storemanager.service.ServiceName;
-import com.storemanager.service.StockService;
+import com.storemanager.service.*;
 import com.storemanager.util.MenuEnum;
 import com.storemanager.util.Message;
 import com.storemanager.util.ServiceException;
+import com.storemanager.util.processes.ProductsUpdateProcess;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -72,15 +70,15 @@ public class MenuListener implements ActionListener {
             baseWindow.setContent(new ProductHistoryScreen(baseWindow));
         }
 
-        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
-            baseWindow.setContent(new InventoryScreen(baseWindow));
-        }
-        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
-            baseWindow.setContent(new InventoryScreen(baseWindow));
-        }
-        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
-            baseWindow.setContent(new InventoryScreen(baseWindow));
-        }
+//        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
+//            baseWindow.setContent(new InventoryScreen(baseWindow));
+//        }
+//        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
+//            baseWindow.setContent(new InventoryScreen(baseWindow));
+//        }
+//        if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY.getCommand())) {
+//            baseWindow.setContent(new InventoryScreen(baseWindow));
+//        }
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_INVENTORY_FIRST.getCommand())) {
             baseWindow.setContent(new InventoryFirstCatScreen(baseWindow));
         }
@@ -135,6 +133,9 @@ public class MenuListener implements ActionListener {
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_DISCOUNT_REPORTS.getCommand())) {
             baseWindow.setContent(new DiscountReportScreen(baseWindow));
         }
-
+        if (menuItem.getCommand().equals(MenuEnum.UPDATE_WATCH_DESCRIPTION.getCommand())) {
+            ProductsUpdateProcess process = new ProductsUpdateProcess();
+            process.startProcess();
+        }
     }
 }

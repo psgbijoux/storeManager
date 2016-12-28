@@ -11,6 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAOImpl extends DAO implements ProductDAO {
@@ -103,6 +104,22 @@ public class ProductDAOImpl extends DAO implements ProductDAO {
         }
     }
 
+    public Product getProductByCode(String code) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Product result = (Product) session.createCriteria(Product.class).add(Restrictions.eq("bareCode", code)).uniqueResult();
+            if (result == null) {
+                result = (Product) session.createCriteria(Product.class).add(Restrictions.eq("code", code)).uniqueResult();
+            }
+            return result;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
     public Integer getBareCodeCount() throws DAOException {
         final Session session = getSessionFactory().openSession();
         try {
@@ -148,5 +165,33 @@ public class ProductDAOImpl extends DAO implements ProductDAO {
             session.close();
             closeSessionFactory();
         }
+    }
+
+    public void updateProductDescription(ArrayList<String> barCodes, ArrayList<String> supplyCodes) {
+
+        final Session session = getSessionFactory().openSession();
+        System.out.println("START PROCESS");
+
+        int index = 0;
+        for (int i = 0; i < barCodes.size(); i++) {
+            System.out.println(i + ": process product: " + barCodes.get(i));
+
+            Product product = (Product) session.createCriteria(Product.class).add(Restrictions.eq("bareCode", barCodes.get(i))).uniqueResult();
+
+            if (product != null) {
+                product.setCode(supplyCodes.get(i));
+
+                session.beginTransaction();
+                session.saveOrUpdate(product);
+                session.getTransaction().commit();
+                System.out.println("product updated: " + barCodes.get(i));
+                index++;
+            }
+        }
+
+        System.out.println("END PROCESS: " + index);
+
+        session.close();
+        closeSessionFactory();
     }
 }

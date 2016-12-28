@@ -16,11 +16,13 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductService implements StoreService {
     private ProductDAO daoImpl;
+    int index = 0;
 
     @Autowired
     public ProductService(ProductDAOImpl daoImpl) {
@@ -139,6 +141,15 @@ public class ProductService implements StoreService {
         }
     }
 
+    public Product getProductByCode(String code) throws ServiceException {
+        try {
+            return daoImpl.getProductByCode(code);
+        } catch (DAOException e) {
+            throw new ServiceException("Error loading product with code " + code);
+        }
+    }
+
+
     public int getBareCodeCount() throws ServiceException {
         Integer count = null;
         try {
@@ -175,6 +186,11 @@ public class ProductService implements StoreService {
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }
+    }
+
+    public void updateProductsDescription(ArrayList<String> barCodes, ArrayList<String> supplyCodes) {
+
+        daoImpl.updateProductDescription(barCodes, supplyCodes);
     }
 
 
