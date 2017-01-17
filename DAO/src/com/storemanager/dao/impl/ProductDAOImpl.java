@@ -167,6 +167,25 @@ public class ProductDAOImpl extends DAO implements ProductDAO {
         }
     }
 
+    @Override
+    public boolean delete(ProductUpdate productUpdate) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Transaction tx = session.beginTransaction();
+            session.delete(productUpdate);
+            tx.commit();
+            //log event
+            LOGGER.info(this.getClass().getName(), "Deleted product-update with id: " + productUpdate.getId());
+            return true;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+
     public void updateProductDescription(ArrayList<String> barCodes, ArrayList<String> supplyCodes) {
 
         final Session session = getSessionFactory().openSession();

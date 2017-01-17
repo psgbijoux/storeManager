@@ -112,6 +112,11 @@ public class MenuListener implements ActionListener {
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_ZREPORT.getCommand())) {
             baseWindow.setContent(new ZReportScreen(baseWindow));
         }
+
+        if (menuItem.getCommand().equals(MenuEnum.MANAGE_LABELS.getCommand())) {
+            baseWindow.setContent(new LabelsScreen(baseWindow));
+        }
+
         if (menuItem.getCommand().equals(MenuEnum.MANAGE_OUT_OF_STOCK.getCommand())) {
             baseWindow.setContent(new OutOfStockScreen(baseWindow));
         }

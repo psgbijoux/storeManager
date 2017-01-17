@@ -8,13 +8,27 @@ import javax.print.attribute.standard.PrinterName;
 import java.math.BigDecimal;
 
 public class PrintUtil {
+
     public static void printLabel(Product product, int labelCount) {
         for (int i = 0; i < labelCount; i++) {
-            printLabel(product);
+            printLabel(PrintLabelEnum.PRODUCT, product, null, null, null, null);
         }
     }
 
-    public static void printLabel(Product product) {
+    public static void printPriceLabel(String priceLabel, int labelCount) {
+        for (int i = 0; i < labelCount; i++) {
+            printLabel(PrintLabelEnum.PRICE, null, null, null, priceLabel, null);
+        }
+    }
+
+    public static void printWeightLabel(String weightLabel, String textLabel1, String textLabel2, int labelCount) {
+        for (int i = 0; i < labelCount; i++) {
+            printLabel(PrintLabelEnum.WEIGHT, null, textLabel1, textLabel2, null, weightLabel);
+        }
+    }
+
+    public static void printLabel(PrintLabelEnum printLabelEnum, Product product, String textLabel1,
+                                  String textLabel2, String priceLabel, String weightLabel) {
         try {
 
             PrintService psZebra = null;
@@ -34,15 +48,25 @@ public class PrintUtil {
             DocPrintJob job = psZebra.createPrintJob();
 
             String zpl = null;
-            if (product.isGenerateBareCodeFlag()) {
-                if (product.isGold()) {
-                    zpl = generateZPL(product.getName(), product.getWeight() + " GR", product.getBareCode());
-                } else if (product.isOther()) {
-                    zpl = generateZPL(product.getName(), product.getPrice().toString() + " LEI", product.getBareCode());
-                }
-            } else {
-                BigDecimal price = product.getPrice();
-                zpl = generateZPLNoBareCode(product.getName(), product.getCode(), price.toString() + " LEI");
+            switch (printLabelEnum) {
+                case PRICE:
+                    zpl = generatePriceZPL(priceLabel);
+                    break;
+                case PRODUCT:
+                    if (product.isGenerateBareCodeFlag()) {
+                        if (product.isGold()) {
+                            zpl = generateZPL(product.getName(), product.getWeight() + " GR", product.getBareCode());
+                        } else if (product.isOther()) {
+                            zpl = generateZPL(product.getName(), product.getPrice().toString() + " LEI", product.getBareCode());
+                        }
+                    } else {
+                        BigDecimal price = product.getPrice();
+                        zpl = generateZPLNoBareCode(product.getName(), product.getCode(), price.toString() + " LEI");
+                    }
+                    break;
+                case WEIGHT:
+                    zpl = generateWeightZPL(weightLabel, textLabel1, textLabel2);
+                    break;
             }
             byte[] by = zpl.getBytes();
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
@@ -53,7 +77,6 @@ public class PrintUtil {
             e.printStackTrace();
         }
     }
-
 
     private static String generateZPL(String nameLabel, String priceLabel, String bareCode) {
         StringBuilder builder = new StringBuilder();
@@ -84,12 +107,38 @@ public class PrintUtil {
         builder.append("^A0,50,35");
         builder.append("^FD").append(priceLabel).append("^FS\n");
         builder.append("^XZ");
-
         return builder.toString();
     }
 
-    private static String generateZPL(String nameLabel, String priceLabel) {
-        return "";
+    private static String generatePriceZPL(String priceLabel) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("^XA\n");
+        builder.append("~SD30");
+        builder.append("^F0140,30,0");
+        builder.append("^A0,50,35");
+        builder.append("^FD").append(priceLabel).append("^FS\n");
+        builder.append("^FO300,30^BY1.0\n");
+        builder.append("^A0,50,35");
+        builder.append("^FD").append(priceLabel).append("^FS\n");
+        builder.append("^XZ");
+        return builder.toString();
+    }
+
+    private static String generateWeightZPL(String weightLabel, String textLabel1, String textLabel2) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("^XA\n");
+        builder.append("~SD30");
+        builder.append("^F0120,50,0");
+        builder.append("^A0,30,25");
+        builder.append("^FD").append(textLabel1).append("^FS\n");
+        builder.append("^F0140,90,0");
+        builder.append("^A0,30,25");
+        builder.append("^FD").append(textLabel2).append("^FS\n");
+        builder.append("^FO290,30^BY1.0\n");
+        builder.append("^A0,64,50");
+        builder.append("^FD").append(weightLabel).append("^FS\n");
+        builder.append("^XZ");
+        return builder.toString();
     }
 
 }

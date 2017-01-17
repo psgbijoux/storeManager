@@ -23,6 +23,7 @@ public enum MenuEnum {
     MANAGE_SALES("manage_sales"),
     MANAGE_ZREPORT("manage_zreport"),
     MANAGE_STOCK("manage_stock"),
+    MANAGE_LABELS("manage_labels"),
     MANAGE_OUT_OF_STOCK("manage_out_of_stock"),
     MANAGE_SMART_SUPPLY("manage_smart_supply"),
     MANAGE_DISCOUNT_REPORTS("manage_discount_reports"),

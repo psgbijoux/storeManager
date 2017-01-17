@@ -49,4 +49,40 @@ public class SaleDaoImpl extends DAO implements SaleDao {
             closeSessionFactory();
         }
     }
+
+    public boolean delete(Sale sale) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Transaction tx = session.beginTransaction();
+            session.delete(sale);
+            tx.commit();
+            //log event
+            LOGGER.info(this.getClass().getName(), "Deleted sale with id: " + sale.getId());
+            return true;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+
+    public boolean delete(SaleDetail saleDetail) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Transaction tx = session.beginTransaction();
+            session.delete(saleDetail);
+            tx.commit();
+            //log event
+            LOGGER.info(this.getClass().getName(), "Deleted sale-detail with id: " + saleDetail.getId());
+            return true;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
 }

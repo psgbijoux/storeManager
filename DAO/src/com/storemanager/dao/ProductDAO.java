@@ -29,5 +29,7 @@ public interface ProductDAO {
 
     List<ProductUpdate> getProductUpdates(Product product) throws DAOException;
 
+    public boolean delete(ProductUpdate productUpdate) throws DAOException;
+
     void updateProductDescription(ArrayList<String> barCodes, ArrayList<String> supplyCodes);
 }

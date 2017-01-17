@@ -486,7 +486,7 @@ public class ProductScreen extends AbstractPanel implements ItemListener {
                     } catch (ServiceException e1) {
                         Message.show(e1);
                     }
-                    loadProducts(category.getId());
+//                    loadProducts(category.getId());
                     JOptionPane.showMessageDialog(null, "Product deleted.");
                     if (editPanel != null)
                         this.remove(editPanel);
