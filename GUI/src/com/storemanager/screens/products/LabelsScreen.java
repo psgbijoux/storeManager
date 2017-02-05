@@ -147,7 +147,7 @@ public class LabelsScreen extends AbstractPanel {
             return;
         }
         if (e.getSource().equals(weightPrint)) {
-            PrintUtil.printWeightLabel(weight.getText(), weight.getText(), weight.getText(), weightQtySelect.getSelectedIndex() + 1);
+            PrintUtil.printWeightLabel(weight.getText(), weightLabel1.getText(), weightLabel2.getText(), weightQtySelect.getSelectedIndex() + 1);
             return;
         }
         if (e.getSource().equals(barcodePrint)) {

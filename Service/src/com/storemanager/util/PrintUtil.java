@@ -114,7 +114,7 @@ public class PrintUtil {
         StringBuilder builder = new StringBuilder();
         builder.append("^XA\n");
         builder.append("~SD30");
-        builder.append("^F0140,30,0");
+        builder.append("^FO120,30,0");
         builder.append("^A0,50,35");
         builder.append("^FD").append(priceLabel).append("^FS\n");
         builder.append("^FO300,30^BY1.0\n");
@@ -128,10 +128,10 @@ public class PrintUtil {
         StringBuilder builder = new StringBuilder();
         builder.append("^XA\n");
         builder.append("~SD30");
-        builder.append("^F0120,50,0");
+        builder.append("^FO120,30,0");
         builder.append("^A0,30,25");
         builder.append("^FD").append(textLabel1).append("^FS\n");
-        builder.append("^F0140,90,0");
+        builder.append("^FO140,70,0");
         builder.append("^A0,30,25");
         builder.append("^FD").append(textLabel2).append("^FS\n");
         builder.append("^FO290,30^BY1.0\n");
