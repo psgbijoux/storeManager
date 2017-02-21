@@ -14,6 +14,7 @@ import com.storemanager.service.*;
 import com.storemanager.util.MenuEnum;
 import com.storemanager.util.Message;
 import com.storemanager.util.ServiceException;
+import com.storemanager.util.processes.ProductsStockProcess;
 import com.storemanager.util.processes.ProductsUpdateProcess;
 
 import javax.swing.*;
@@ -139,8 +140,12 @@ public class MenuListener implements ActionListener {
             baseWindow.setContent(new DiscountReportScreen(baseWindow));
         }
         if (menuItem.getCommand().equals(MenuEnum.UPDATE_WATCH_DESCRIPTION.getCommand())) {
-            ProductsUpdateProcess process = new ProductsUpdateProcess();
-            process.startProcess();
+            ProductsUpdateProcess productsUpdateProcess = new ProductsUpdateProcess();
+            productsUpdateProcess.startProcess();
+        }
+        if (menuItem.getCommand().equals(MenuEnum.GENERATE_WATCH_STOCK_REPORT.getCommand())) {
+            ProductsStockProcess productsStockProcess = new ProductsStockProcess();
+            productsStockProcess.startProcess();
         }
     }
 }

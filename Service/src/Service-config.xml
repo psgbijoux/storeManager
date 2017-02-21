@@ -42,5 +42,6 @@
     <bean id="zreportService" class="com.storemanager.service.ZReportService"/>
 
     <!-- Process beans-->
-    <bean id="productUpdatesProcess" class="com.storemanager.util.processes.ProductsUpdateProcess"/>
+    <bean id="productsUpdateProcess" class="com.storemanager.util.processes.ProductsUpdateProcess"/>
+    <bean id="productsStockProcess" class="com.storemanager.util.processes.ProductsStockProcess"/>
 </beans>
