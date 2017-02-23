@@ -146,6 +146,7 @@ public class MenuListener implements ActionListener {
         if (menuItem.getCommand().equals(MenuEnum.GENERATE_WATCH_STOCK_REPORT.getCommand())) {
             ProductsStockProcess productsStockProcess = new ProductsStockProcess();
             productsStockProcess.startProcess();
+            Message.showError("Process Finished!");
         }
     }
 }

@@ -100,10 +100,10 @@ public class PrintUtil {
         builder.append("~SD30");
         builder.append("^FT120,50,0");
         builder.append("^A0,32,25").append("^FD").append(nameLabel).append("^FS\n");
-        builder.append("^FT140,90,0");
-        builder.append("^A0,32,25");
+        builder.append("^FT110,90,0");
+        builder.append("^A0,25,20");
         builder.append("^FD").append(description).append("^FS\n");
-        builder.append("^FO290,45^BY2.2\n");
+        builder.append("^FO300,45^BY2.2\n");
         builder.append("^A0,50,35");
         builder.append("^FD").append(priceLabel).append("^FS\n");
         builder.append("^XZ");

@@ -18,8 +18,8 @@ import java.util.List;
 
 public class ProductsStockProcess {
 
-    private static String fileInitial = "stock-init-QQ.csv";
-    private static String fileUpdated = "stock-update-QQ.csv";
+    private static String fileInitial = "stock-init.csv";
+    private static String fileUpdated = "stock-update.csv";
 
     private ProductService productService;
     private SaleService saleService;
@@ -52,8 +52,8 @@ public class ProductsStockProcess {
                 try {
                     Product product = productService.getProductByCode(split[0]);
                     if (product != null) {
+                        sb.append(";" + product.getPrice());
                         sb.append(";" + product.getQuantity());
-
                         //get last sale
                         List<SaleDetail> salesList = saleService.getSaleData(product);
                         sb.append(";" + getLastSaleDate(salesList));
