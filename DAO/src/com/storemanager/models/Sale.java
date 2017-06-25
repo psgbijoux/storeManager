@@ -19,7 +19,7 @@ public class Sale {
     @Column(name = "add_date")
     private Date addDate;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name = "sale_id")
     private List<SaleDetail> details = new ArrayList<SaleDetail>();
 

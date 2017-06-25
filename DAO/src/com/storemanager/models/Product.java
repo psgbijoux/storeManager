@@ -34,9 +34,6 @@ public class Product implements Cloneable, Serializable {
     private String alertValue;
     @Column(name = "generate_bare_code_flag")
     private boolean generateBareCodeFlag;
-    @OneToOne(targetEntity = Category.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Category category;
 
     public Product() {
     }
@@ -73,7 +70,7 @@ public class Product implements Cloneable, Serializable {
         price.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public Product(int id, int categoryId, String name, String description, String code, String bareCode, int quantity, BigDecimal price, byte[] image, double weight, boolean gold, boolean other, boolean alertFlag, String alertValue, boolean generateBareCodeFlag, Category category) {
+    public Product(int id, int categoryId, String name, String description, String code, String bareCode, int quantity, BigDecimal price, byte[] image, double weight, boolean gold, boolean other, boolean alertFlag, String alertValue, boolean generateBareCodeFlag) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -89,11 +86,11 @@ public class Product implements Cloneable, Serializable {
         this.alertFlag = alertFlag;
         this.alertValue = alertValue;
         this.generateBareCodeFlag = generateBareCodeFlag;
-        this.category = category;
+//        this.category = category;
     }
 
     public Product clone() {
-        Product product = new Product(id, categoryId, name, description, code, bareCode, quantity, price, image, weight, isGold, isOther, alertFlag, alertValue, generateBareCodeFlag, category);
+        Product product = new Product(id, categoryId, name, description, code, bareCode, quantity, price, image, weight, isGold, isOther, alertFlag, alertValue, generateBareCodeFlag);
         return product;
     }
 
@@ -191,14 +188,6 @@ public class Product implements Cloneable, Serializable {
 
     public void setOther(boolean other) {
         isOther = other;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public boolean isAlertFlag() {

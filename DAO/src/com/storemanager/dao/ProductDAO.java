@@ -13,7 +13,11 @@ public interface ProductDAO {
 
     boolean delete(Product product) throws DAOException;
 
-    List<Product> getProductByCategoryId(int categoryId) throws DAOException;
+    List<Product> getProductsByCategoryId(int categoryId) throws DAOException;
+
+    int countProductsByCategoryId(int categoryId);
+
+    List<Product> getPaginatedProductsByCategory(int category, int page) throws DAOException;
 
     List<Product> getOutOfStockProductByCategoryId(int categoryId) throws DAOException;
 

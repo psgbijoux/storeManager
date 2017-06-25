@@ -4,17 +4,22 @@ import com.storemanager.dao.DAO;
 import com.storemanager.dao.ProductDAO;
 import com.storemanager.models.Product;
 import com.storemanager.models.ProductUpdate;
+import com.storemanager.models.SaleDetail;
 import com.storemanager.util.DAOException;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAOImpl extends DAO implements ProductDAO {
+
+    private static final Integer PAGE_SIZE = 8;
 
     public ProductDAOImpl() {
     }
@@ -36,10 +41,27 @@ public class ProductDAOImpl extends DAO implements ProductDAO {
     }
 
     public boolean delete(Product product) throws DAOException {
+
         final Session session = getSessionFactory().openSession();
         try {
             Transaction tx = session.beginTransaction();
-            session.delete(product);
+
+            List<ProductUpdate> supplies = (List<ProductUpdate>) session.createCriteria(ProductUpdate.class)
+                    .add(Restrictions.eq("productId", product.getId())).list();
+            List<SaleDetail> sales = (List<SaleDetail>) session.createCriteria(SaleDetail.class)
+                    .add(Restrictions.eq("productId", product.getId())).list();
+
+            for(ProductUpdate pu: supplies) {
+                session.delete(pu);
+            }
+            if (CollectionUtils.isEmpty(sales)) {
+                session.delete(product);
+            } else {
+                for (SaleDetail sd : sales) {
+                    session.delete(sd);
+                }
+            }
+
             tx.commit();
             //log event
             LOGGER.info(this.getClass().getName(), "Deleted product with id: " + product.getId());
@@ -52,11 +74,45 @@ public class ProductDAOImpl extends DAO implements ProductDAO {
         }
     }
 
-    public List<Product> getProductByCategoryId(int categoryId) throws DAOException {
+    public List<Product> getProductsByCategoryId(int categoryId) throws DAOException {
         final Session session = getSessionFactory().openSession();
         try {
             List<Product> result = (List<Product>) session.createCriteria(Product.class).add(Restrictions.eq("categoryId", categoryId)).list();
             return result;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+    @Override
+    public int countProductsByCategoryId(int category) {
+        final Session session = getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Criteria cr = session.createCriteria(Product.class);
+            cr.add(Restrictions.eq("categoryId", category));
+            cr.setProjection(Projections.rowCount());
+            Number no = (Number) cr.uniqueResult();
+            return no.intValue() / PAGE_SIZE + 1;
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+    @Override
+    public List<Product> getPaginatedProductsByCategory(int category, int page) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Criteria cr = session.createCriteria(Product.class);
+            cr.add(Restrictions.eq("categoryId", category));
+            cr.setFirstResult((page-1)*PAGE_SIZE);
+            cr.setMaxResults(PAGE_SIZE);
+            return cr.list();
         } catch (Exception e) {
             throw new DAOException(e.getMessage());
         } finally {

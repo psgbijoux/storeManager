@@ -19,7 +19,7 @@ public class SaleDaoImpl extends DAO implements SaleDao {
     }
 
     @Override
-    public boolean addNew(Sale sale) throws DAOException {
+    public boolean addNew(Object sale) throws DAOException {
         final Session session = getSessionFactory().openSession();
         try {
             Transaction tx = session.beginTransaction();

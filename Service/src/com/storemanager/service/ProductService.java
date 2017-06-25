@@ -4,7 +4,6 @@ import com.storemanager.dao.ProductDAO;
 import com.storemanager.dao.impl.ProductDAOImpl;
 import com.storemanager.models.Product;
 import com.storemanager.models.ProductUpdate;
-import com.storemanager.models.SaleDetail;
 import com.storemanager.util.DAOException;
 import com.storemanager.util.ImageUtil;
 import com.storemanager.util.ServiceException;
@@ -31,7 +30,19 @@ public class ProductService implements StoreService {
 
     public List<Product> getProductsByCategoryId(int categoryId) throws ServiceException {
         try {
-            return daoImpl.getProductByCategoryId(categoryId);
+            return daoImpl.getProductsByCategoryId(categoryId);
+        } catch (DAOException e) {
+            throw new ServiceException("Error loading products with category id:" + categoryId);
+        }
+    }
+
+    public int countProductsByCategoryId(int categoryId) {
+        return daoImpl.countProductsByCategoryId(categoryId);
+    }
+
+    public List<Product> getProductsByCategoryId(int categoryId, int currentPage) throws ServiceException {
+        try {
+            return daoImpl.getPaginatedProductsByCategory(categoryId, currentPage);
         } catch (DAOException e) {
             throw new ServiceException("Error loading products with category id:" + categoryId);
         }

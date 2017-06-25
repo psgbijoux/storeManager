@@ -18,15 +18,15 @@ import java.util.*;
 
 @Service
 public class SaleService implements StoreService {
-    private SaleDao dao;
+    private SaleDao saleDao;
     private ProductDAO productDAO;
     private List<ScreenProduct> productList;
     private final String CASH_REGISTER_OUT_FILE = "cashRegisterOut.txt";
     private final String CASH_REGISTER_OUT_PATH = "Cash_Register\\";
 
     @Autowired
-    public SaleService(SaleDaoImpl dao, ProductDAOImpl productDAO) {
-        this.dao = dao;
+    public SaleService(SaleDaoImpl saleDao, ProductDAOImpl productDAO) {
+        this.saleDao = saleDao;
         this.productDAO = productDAO;
         productList = new ArrayList<ScreenProduct>();
     }
@@ -126,8 +126,10 @@ public class SaleService implements StoreService {
                 int oldQty = product.getQuantity();
                 product.setQuantity(oldQty - screenProduct.getQuantity());
                 productDAO.store(product);
+                saleDao.addNew(detail);
+
             }
-            dao.addNew(sale);
+            saleDao.addNew(sale);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }
@@ -256,7 +258,7 @@ public class SaleService implements StoreService {
 
     public List<SaleDetail> getSaleData(Product product) throws ServiceException{
         try {
-            List<SaleDetail> list = dao.getProductSales(product);
+            List<SaleDetail> list = saleDao.getProductSales(product);
             return list;
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
