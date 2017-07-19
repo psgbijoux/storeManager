@@ -256,10 +256,36 @@ public class SaleService implements StoreService {
         }
     }
 
-    public List<SaleDetail> getSaleData(Product product) throws ServiceException{
+    public List<SaleDetail> getSaleData(Product product) throws ServiceException {
         try {
             List<SaleDetail> list = saleDao.getProductSales(product);
             return list;
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    public List<SaleDetail> getSalesFilteredByDate(Date startDate, Date endDate, int currentPage, Category category) throws ServiceException {
+        try {
+            List<SaleDetail> list = new ArrayList<>();
+            if (category != null) {
+                list.addAll(saleDao.getPaginatedSalesFilterByDateAndCategory(startDate, endDate, currentPage, category));
+            } else {
+                list.addAll(saleDao.getPaginatedSalesFilterByDate(startDate, endDate, currentPage));
+            }
+            return list;
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    public int countSalesFilteredByDate(Date startDate, Date endDate, Category category) throws ServiceException {
+        try {
+            if (category != null) {
+                return saleDao.countSalesFilteredByDateAndCategory(startDate, endDate, category);
+            } else {
+                return saleDao.countSalesFilteredByDate(startDate, endDate);
+            }
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }

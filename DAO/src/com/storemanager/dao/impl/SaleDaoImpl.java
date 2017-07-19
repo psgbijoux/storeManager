@@ -2,6 +2,7 @@ package com.storemanager.dao.impl;
 
 import com.storemanager.dao.DAO;
 import com.storemanager.dao.SaleDao;
+import com.storemanager.models.Category;
 import com.storemanager.models.Product;
 import com.storemanager.models.Sale;
 import com.storemanager.models.SaleDetail;
@@ -9,8 +10,11 @@ import com.storemanager.util.DAOException;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Date;
 import java.util.List;
 
 public class SaleDaoImpl extends DAO implements SaleDao {
@@ -42,6 +46,84 @@ public class SaleDaoImpl extends DAO implements SaleDao {
             criteria.add(Restrictions.eq("productId", product.getId()));
             List<SaleDetail> result = (List<SaleDetail>) criteria.list();
             return result;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+    @Override
+    public List<SaleDetail> getPaginatedSalesFilterByDate(Date startDate, Date endDate, int page) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Criteria criteria = session.createCriteria(SaleDetail.class);
+            criteria.add(Restrictions.ge("addDate", startDate))
+                    .add(Restrictions.le("addDate", endDate));
+            criteria.addOrder(Order.desc("id"));
+            criteria.setFirstResult((page - 1) * PAGE_SIZE);
+            criteria.setMaxResults(PAGE_SIZE);
+            return criteria.list();
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+    @Override
+    public List<SaleDetail> getPaginatedSalesFilterByDateAndCategory(Date startDate, Date endDate, int page, Category category) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Criteria criteria = session.createCriteria(SaleDetail.class);
+            criteria.createAlias("product", "p");
+            criteria.add(Restrictions.ge("addDate", startDate))
+                    .add(Restrictions.le("addDate", endDate))
+                    .add(Restrictions.eq("p.categoryId", category.getId()));
+            criteria.addOrder(Order.desc("id"));
+            criteria.setFirstResult((page - 1) * PAGE_SIZE);
+            criteria.setMaxResults(PAGE_SIZE);
+            return criteria.list();
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+    @Override
+    public int countSalesFilteredByDate(Date startDate, Date endDate) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Criteria criteria = session.createCriteria(SaleDetail.class);
+            criteria.add(Restrictions.ge("addDate", startDate))
+                    .add(Restrictions.le("addDate", endDate));
+            criteria.setProjection(Projections.rowCount());
+            Number no = (Number) criteria.uniqueResult();
+            return no.intValue() / PAGE_SIZE + 1;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+    @Override
+    public int countSalesFilteredByDateAndCategory(Date startDate, Date endDate, Category category) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+            Criteria criteria = session.createCriteria(SaleDetail.class);
+            criteria.createAlias("product", "p");
+            criteria.add(Restrictions.ge("addDate", startDate))
+                    .add(Restrictions.le("addDate", endDate))
+                    .add(Restrictions.eq("p.categoryId", category.getId()));
+            criteria.setProjection(Projections.rowCount());
+            Number no = (Number) criteria.uniqueResult();
+            return no.intValue() / PAGE_SIZE + 1;
         } catch (Exception e) {
             throw new DAOException(e.getMessage());
         } finally {

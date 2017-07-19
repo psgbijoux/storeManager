@@ -14,7 +14,7 @@ public class MultiLineTableCellRenderer extends JList<String> implements TableCe
         if (value instanceof String[]) {
             setListData((String[]) value);
             String[] values = (String[]) value;
-            if (values.length == 5 && values[4].equals("cantitate: 0"))
+            if (values.length == 5 && values[4].contains("stock: 0"))
                 redBorderFlag = true;
         }
 

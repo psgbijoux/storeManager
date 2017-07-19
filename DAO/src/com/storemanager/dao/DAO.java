@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 public abstract class DAO {
+
+    public static final Integer PAGE_SIZE = 8;
+
     protected static final LogDAOImpl LOGGER = new LogDAOImpl();
     private static Configuration configuration;
     private static SessionFactory sessionFactory = null;

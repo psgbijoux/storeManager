@@ -5,9 +5,11 @@ import com.storemanager.components.Window;
 import com.storemanager.screens.categories.CategoryScreen;
 import com.storemanager.screens.file.LoginScreen;
 import com.storemanager.screens.file.NotAutorized;
+import com.storemanager.screens.management.ProductManagementScreen;
 import com.storemanager.screens.products.*;
 import com.storemanager.screens.reports.DiscountReportScreen;
 import com.storemanager.screens.reports.ReportsScreen;
+import com.storemanager.screens.management.SalesManagementScreen;
 import com.storemanager.screens.sales.SalesScreen;
 import com.storemanager.screens.settings.*;
 import com.storemanager.service.*;
@@ -68,7 +70,10 @@ public class MenuListener implements ActionListener {
             baseWindow.setContent(new ProductScreen(baseWindow));
         }
         if (menuItem.getCommand().equals(MenuEnum.PRODUCT_MANAGEMENT.getCommand())) {
-            baseWindow.setContent(new ProductManagement(baseWindow));
+            baseWindow.setContent(new ProductManagementScreen(baseWindow));
+        }
+        if (menuItem.getCommand().equals(MenuEnum.SALES_MANAGEMENT.getCommand())) {
+            baseWindow.setContent(new SalesManagementScreen(baseWindow));
         }
         if (menuItem.getCommand().equals(MenuEnum.PRODUCT_HISTORY.getCommand())) {
             baseWindow.setContent(new ProductHistoryScreen(baseWindow));

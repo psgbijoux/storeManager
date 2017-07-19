@@ -19,7 +19,6 @@ import java.util.List;
 
 public class ProductDAOImpl extends DAO implements ProductDAO {
 
-    private static final Integer PAGE_SIZE = 8;
 
     public ProductDAOImpl() {
     }

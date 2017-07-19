@@ -30,7 +30,8 @@ public enum MenuEnum {
     MANAGE_SALE_REPORTS("manage_sale_reports"),
     UPDATE_WATCH_DESCRIPTION("update_watch_description"),
     GENERATE_WATCH_STOCK_REPORT("generate_watch_stock_report"),
-    PRODUCT_MANAGEMENT("product_management");
+    PRODUCT_MANAGEMENT("product_management"),
+    SALES_MANAGEMENT("sales_management");
 
     private String command;
     private int mnemonic;
