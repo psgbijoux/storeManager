@@ -12,6 +12,7 @@ public class Category {
     @Column(name = "parent_id")
     private int parentId;
     private String name;
+    @Column(name = "description")
     private String description;
 
     public Category() {

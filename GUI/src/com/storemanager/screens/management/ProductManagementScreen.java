@@ -21,8 +21,6 @@ public class ProductManagementScreen extends AbstractManagementScreen {
     private JButton add, edit, delete, search;
     private JTextField bcSearch;
 
-    private String command;
-
     private ProductService productService = ServiceLocator.getService(ServiceName.PRODUCT_SERVICE);
 
     public ProductManagementScreen(Window baseWindow) {
@@ -66,13 +64,18 @@ public class ProductManagementScreen extends AbstractManagementScreen {
 
         if (e.getSource() instanceof JButton) {
             if (e.getSource() == add) {
-                command = "ADD";
+                super.command = "ADD";
                 if (editPanel != null) {
                     this.remove(editPanel);
+                }
+                if (supplyLabel != null) {
                     this.remove(supplyLabel);
                     this.remove(salesLabel);
                     this.remove(supplyScrollPane);
                     this.remove(salesScrollPane);
+                }
+                if (super.editedProduct != null) {
+                    super.editedProduct = null;
                 }
                 this.repaint();
                 loadProductForm(null);
@@ -108,7 +111,7 @@ public class ProductManagementScreen extends AbstractManagementScreen {
                             productService.delete(new Product(id));
 
                             lastPage = getLastPageNo();
-                            loadSearchData(currentPage);
+                            loadSearchData(currentPage, null);
                         } catch (ServiceException e1) {
                             Message.show(e1);
                         } catch (IOException e1) {
@@ -117,7 +120,9 @@ public class ProductManagementScreen extends AbstractManagementScreen {
                         JOptionPane.showMessageDialog(null, "Product deleted.");
                         if (editPanel != null) {
                             this.remove(editPanel);
-                            this.remove(super.supplyLabel);
+                        }
+                        if (supplyLabel !=  null) {
+                            this.remove(supplyLabel);
                             this.remove(salesLabel);
                             this.remove(supplyScrollPane);
                             this.remove(salesScrollPane);
@@ -133,7 +138,9 @@ public class ProductManagementScreen extends AbstractManagementScreen {
         if (e.getSource() instanceof ImageButton) {
             ImageButton trigger = (ImageButton) e.getSource();
             if (trigger.getCommand().equals(ButtonEnum.BARCODEHISTORY.getCommand())){
-                this.remove(editPanel);
+                if (editPanel != null) {
+                    this.remove(editPanel);
+                }
                 this.repaint();
                 try {
                     String barcodeStr = bcSearch.getText();
@@ -144,13 +151,16 @@ public class ProductManagementScreen extends AbstractManagementScreen {
                         loadProductForm(product);
                         loadSupplyHistory(product);
                         loadSaleHistory(product);
-
-                        command = "SEARCH";
+                        loadSearchData(0, product);
+                        super.command = "SEARCH";
                         bcSearch.setText("");
                     }
                 } catch (ServiceException e1) {
+                    JOptionPane.showMessageDialog(null, "Products not found!");
+                } catch (IOException e2) {
                     JOptionPane.showMessageDialog(null, "Product not found!");
                 }
+
             } else if (trigger.getCommand().equals(ButtonEnum.SAVE.getCommand())) {
                 String validationMessage = validateProductForm();
                 if (!validationMessage.isEmpty()) {
@@ -158,10 +168,11 @@ public class ProductManagementScreen extends AbstractManagementScreen {
                     return;
                 }
 
-                if ("ADD".equals(command)) {
+                if ("ADD".equals(super.command)) {
                     try {
                         Product product = new Product();
                         product.setCategoryId(currentCategory.getId());
+                        product.setGenerateBareCodeFlag(bareCodeFlag.isSelected());
                         updateProductByProductForm(product);
                         updateProductBarCode(product);
                         BufferedImage image = updateImageByProductForm();
@@ -175,7 +186,7 @@ public class ProductManagementScreen extends AbstractManagementScreen {
                         JOptionPane.showMessageDialog(null, "Product added with success!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                         lastPage = getLastPageNo();
-                        loadSearchData(currentPage);
+                        loadSearchData(currentPage, null);
 
                         int count = Integer.parseInt(printCount.getText());
                         PrintUtil.printLabel(product, count);
@@ -184,7 +195,7 @@ public class ProductManagementScreen extends AbstractManagementScreen {
                     } catch (IOException e1) {
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } else if ("SEARCH".equals(command)) {
+                } else if ("SEARCH".equals(super.command)) {
                     try {
                         Product product = productService.getProductByCode(editedProduct.getBareCode());
                         updateProductByProductForm(product);
@@ -206,10 +217,14 @@ public class ProductManagementScreen extends AbstractManagementScreen {
     }
 
     @Override
-    protected List<Product> getPaginatedData(int currentPage) {
+    protected List<Product> getPaginatedData(int currentPage, Product product) {
         List<Product> products = new ArrayList<>();
         try {
-            products.addAll(productService.getProductsByCategoryId(currentCategory.getId(), currentPage));
+            if (product != null) {
+                products.add(product);
+            } else {
+                products.addAll(productService.getProductsByCategoryId(currentCategory.getId(), currentPage));
+            }
         } catch (ServiceException e) {
             Message.show(e);
         }

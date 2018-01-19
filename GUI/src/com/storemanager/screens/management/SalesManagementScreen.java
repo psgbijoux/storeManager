@@ -73,7 +73,7 @@ public class SalesManagementScreen extends AbstractManagementScreen {
     }
 
     @Override
-    protected List<SaleDetail> getPaginatedData(int currentPage) {
+    protected List<SaleDetail> getPaginatedData(int currentPage, Product product) {
         List<SaleDetail> sales = new ArrayList<>();
         try {
             sales.addAll(saleService.getSalesFilteredByDate(startDate, endDate, currentPage, currentCategory));
@@ -130,7 +130,7 @@ public class SalesManagementScreen extends AbstractManagementScreen {
                 currentPage = FIRST_PAGE;
                 lastPage = getLastPageNo();
                 try {
-                    loadSearchData(currentPage);
+                    loadSearchData(currentPage, null);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

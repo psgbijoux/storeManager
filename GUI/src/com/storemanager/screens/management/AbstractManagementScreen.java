@@ -59,7 +59,7 @@ public abstract class AbstractManagementScreen extends AbstractPanel implements 
     private CategoryService categoryService = ServiceLocator.getService(ServiceName.CATEGORY_SERVICE);
     private ProductService productService = ServiceLocator.getService(ServiceName.PRODUCT_SERVICE);
 
-    abstract List<? extends Object> getPaginatedData(int currentPage);
+    abstract List<? extends Object> getPaginatedData(int currentPage, Product product);
 
     abstract int getLastPageNo();
 
@@ -168,7 +168,7 @@ public abstract class AbstractManagementScreen extends AbstractPanel implements 
         weight.setEnabled(false);
     }
 
-    protected void loadSearchData(int currentPage) throws IOException {
+    protected void loadSearchData(int currentPage, Product product) throws IOException {
         DefaultTableModel tableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -179,7 +179,7 @@ public abstract class AbstractManagementScreen extends AbstractPanel implements 
         tableModel.addColumn("Photo");
         tableModel.addColumn("Name");
 
-        List<Object> paginatedData = (List<Object>) getPaginatedData(currentPage);
+        List<Object> paginatedData = (List<Object>) getPaginatedData(currentPage, product);
         for (Object data: paginatedData) {
             Object[] rowData = generateTableRowData(data);
             tableModel.addRow(rowData);
@@ -592,7 +592,7 @@ public abstract class AbstractManagementScreen extends AbstractPanel implements 
                 currentCategory = null;
             }
             try {
-                loadSearchData(currentPage);
+                loadSearchData(currentPage, null);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -601,15 +601,15 @@ public abstract class AbstractManagementScreen extends AbstractPanel implements 
         if (e.getSource() instanceof JButton) {
             try {
                 if (e.getSource() == next && currentPage < lastPage) {
-                    loadSearchData(++currentPage);
+                    loadSearchData(++currentPage, null);
                 } else if (e.getSource() == prev && currentPage > FIRST_PAGE) {
-                    loadSearchData(--currentPage);
+                    loadSearchData(--currentPage, null);
                 } else if (e.getSource() == last) {
                     currentPage = lastPage;
-                    loadSearchData(currentPage);
+                    loadSearchData(currentPage, null);
                 } else if (e.getSource() == first) {
                     currentPage = FIRST_PAGE;
-                    loadSearchData(currentPage);
+                    loadSearchData(currentPage, null);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -715,9 +715,10 @@ public abstract class AbstractManagementScreen extends AbstractPanel implements 
                             productService.storeProductUpdate(productUpdate);
 
                             lastUsedProduct = product;
+                            editedProduct = product;
                             JOptionPane.showMessageDialog(null, "Product saved with success!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-                            loadSearchData(currentPage);
+                            loadSearchData(currentPage, null);
                             loadSupplyHistory(product);
 
                         } catch (ServiceException se) {
