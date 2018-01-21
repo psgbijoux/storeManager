@@ -65,7 +65,7 @@ public class InventoryProductsReportGenerator {
     private static void createHeader(PdfPTable table, String page) {
 
         table.addCell(createCell(7, 1, BOLD, 0, "Unitatea S.C. P.S.G. COM S.R.L."));
-        table.addCell(createCell(12,2, BOLD, 1, "LISTA DE INVENTARIERE\nDATA 31.12.2015"));
+        table.addCell(createCell(12,2, BOLD, 1, "LISTA DE INVENTARIERE\nDATA 31.12.2017"));
         table.addCell(createCell(6, 1, BOLD, 0, "Gestiunea 1"));
         table.addCell(createCell(2, 1, BOLD, 1, "Pagina"));
         table.addCell(createCell(7, 1, BOLD, 0, "Magazin Memorandumului 12"));
