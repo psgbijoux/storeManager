@@ -2,7 +2,6 @@ package com.storemanager.dao.impl;
 
 import com.storemanager.dao.DAO;
 import com.storemanager.dao.StockDAO;
-import com.storemanager.models.InventoryReport;
 import com.storemanager.models.StockReport;
 import com.storemanager.util.DAOException;
 import org.hibernate.Query;
@@ -31,7 +30,7 @@ public class StockDAOImpl extends DAO implements StockDAO {
                 sql = "SELECT CAT.NAME,CAT.DESCRIPTION, SUM(PROD.QUANTITY) ITEMS, SUM(PROD.WEIGHT) WEIGHT, PROD.IS_GOLD, PROD.IS_OTHER,SUM((PROD.QUANTITY * PROD.PRICE))PRICE  FROM CATEGORIES CAT\n" +
                     "INNER JOIN PRODUCTS PROD ON PROD.CATEGORY_ID = CAT.ID\n" +
                     "WHERE PROD.quantity > 0\n" +
-                    "GROUP BY CAT.NAME, CAT.ID";
+                    "GROUP BY CAT.NAME, CAT.ID, PROD.IS_GOLD, PROD.IS_OTHER";
             }
             Query query = session.createSQLQuery(sql);
             ScrollableResults rs = query.scroll(ScrollMode.FORWARD_ONLY);
@@ -77,6 +76,33 @@ public class StockDAOImpl extends DAO implements StockDAO {
                 lineData[2] = rs.get(idx++).toString();
                 lineData[3] = rs.get(idx++).toString();
                 lineData[4] = rs.get(idx++).toString();
+                result.add(lineData);
+            }
+            return result;
+        } catch (Exception e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            session.close();
+            closeSessionFactory();
+        }
+    }
+
+    @Override
+    public List<String[]> getProductsInStockFromCategory(final Integer categoryId) throws DAOException {
+        final Session session = getSessionFactory().openSession();
+        try {
+
+            String sql= "SELECT P.WEIGHT, P.BARE_CODE FROM PRODUCTS P WHERE P.CATEGORY_ID = ? AND P.QUANTITY > 0 AND P.IS_GOLD = 1 ORDER BY P.WEIGHT";
+            Query query = session.createSQLQuery(sql);
+            query.setParameter(0, categoryId);
+            ScrollableResults rs = query.scroll(ScrollMode.FORWARD_ONLY);
+            List<String[]> result = new ArrayList<>();
+            while (rs.next()) {
+                String[] lineData = new String[2];
+                int idx = 0;
+
+                lineData[0] = rs.get(idx++).toString();
+                lineData[1] = rs.get(idx++).toString();
                 result.add(lineData);
             }
             return result;

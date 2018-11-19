@@ -178,4 +178,24 @@ public class InventoryService implements StoreService {
             throw new ServiceException("Error generating report.");
         }
     }
+
+    public void generateGoldStockReport() throws ServiceException {
+        final List<String[]> data1 = new ArrayList<>();
+        final List<String[]> data2 = new ArrayList<>();
+        final List<String[]> data3 = new ArrayList<>();
+        final List<String[]> data4 = new ArrayList<>();
+        final List<String[]> data5 = new ArrayList<>();
+        final List<String[]> data6 = new ArrayList<>();
+
+        try {
+            data1.addAll(this.stockDAO.getProductsInStockFromCategory(14));
+            data2.addAll(this.stockDAO.getProductsInStockFromCategory(15));
+            data3.addAll(this.stockDAO.getProductsInStockFromCategory(16));
+            data4.addAll(this.stockDAO.getProductsInStockFromCategory(17));
+            data5.addAll(this.stockDAO.getProductsInStockFromCategory(25));
+            data6.addAll(this.stockDAO.getProductsInStockFromCategory(26));
+        } catch (DAOException e) {
+            throw new ServiceException("Error generating report.");
+        }
+    }
 }
