@@ -1,7 +1,8 @@
 package com.storemanager.util;
 
 public enum SettingsEnum {
-    SERIAL_PORT,
+    CASH_MACHINE_FOLDER,
+    CASH_MACHINE_FILE,
     REPORTS_FOLDER,
     GOLD_GR_PRICE,
     SS_IMAGE_WIDTH,

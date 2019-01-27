@@ -18,11 +18,12 @@ import java.util.*;
 
 @Service
 public class SaleService implements StoreService {
+
+    private static final String SETTINGS_PROPERTIES = "settings.properties";
+
     private SaleDao saleDao;
     private ProductDAO productDAO;
     private List<ScreenProduct> productList;
-    private final String CASH_REGISTER_OUT_FILE = "cashRegisterOut.txt";
-    private final String CASH_REGISTER_OUT_PATH = "Cash_Register\\";
 
     @Autowired
     public SaleService(SaleDaoImpl saleDao, ProductDAOImpl productDAO) {
@@ -60,29 +61,10 @@ public class SaleService implements StoreService {
         this.productList.clear();
     }
 
-    public void createTipsPrint(String tipsStr) throws ServiceException {
-
-        try {
-            Double tipsDouble = Double.parseDouble(tipsStr);
-
-            generateCashRegisterFileForTips(tipsDouble);
-            printReceipt();
-
-        } catch (NumberFormatException ex) {
-            throw new ServiceException("Valoare incorecta pentru bacsis!");
-        }
-    }
-
     public void createSale(User user, Date addDate, boolean cash) throws ServiceException {
 
         //generate cash register file
-        if(cash == true) {
-            generateCashRegisterFile();
-        } else {
-            generateCashRegisterFileCard();
-        }
-        //send cash register command
-        printReceipt();
+        generateCashRegisterFile(cash);
 
         //create sale
         Sale sale = new Sale();
@@ -138,128 +120,67 @@ public class SaleService implements StoreService {
         clearList();
     }
 
-    private void generateCashRegisterFile() throws ServiceException {
+    private void generateCashRegisterFile(boolean cash) throws ServiceException {
         try {
-            File path = new File(CASH_REGISTER_OUT_PATH);
+            String fileLocation = getProperty(SettingsEnum.CASH_MACHINE_FOLDER);
+            String fileName = getProperty(SettingsEnum.CASH_MACHINE_FILE);
+            File path = new File(fileLocation);
             if (!path.exists()) {
                 path.mkdir();
             }
-            File outFile = new File(path + "\\" + CASH_REGISTER_OUT_FILE);
+            File outFile = new File(path + "\\" + fileName);
             FileWriter fileWriter = new FileWriter(outFile);
             BufferedWriter out = new BufferedWriter(fileWriter);
             for (ScreenProduct screenProduct : productList) {
                 if (screenProduct.getProduct().isGold()) {
-                    int priceVal = screenProduct.getProduct().getPrice().multiply(new BigDecimal(100)).intValue();
+                    int priceVal = screenProduct.getProduct().getPrice().intValue();
                     BigDecimal weight = new BigDecimal(screenProduct.getProduct().getWeight());
-                    weight = weight.multiply(new BigDecimal(1000));
-                    weight = weight.setScale(0, RoundingMode.HALF_UP);
-                    out.write(String.format("1;%s;3;5;1;%d;%s;0", screenProduct.getProduct().getName(), priceVal, weight.toString()));
+                    weight = weight.setScale(2, RoundingMode.HALF_UP);
+                    out.write(String.format("S,1,______,_,__;%s;%d;%s;0;1;1;0;0;gr", screenProduct.getProduct().getName(), priceVal, weight.toString()));
+//                  out.write(String.format("|1             |2 |3 |4 |5|6|7|8|9|10|
                     out.newLine();
                 } else {
-                    int priceVal = screenProduct.getProduct().getPrice().multiply(new BigDecimal(100)).intValue();
-                    int qtyVal = screenProduct.getQuantity() * 1000;
-                    out.write(String.format("1;%s;3;5;1;%d;%d;0", screenProduct.getProduct().getName(), priceVal, qtyVal));
+                    int priceVal = screenProduct.getProduct().getPrice().intValue();
+                    int qtyVal = screenProduct.getQuantity();
+                    out.write(String.format("S,1,______,_,__;%s;%d;%d;0;1;1;0;0;buc", screenProduct.getProduct().getName(), priceVal, qtyVal));
+//                  out.write(String.format("|      1       |2 |3 |4 |5|6|7|8|9|10|
                     out.newLine();
                 }
                 if (screenProduct.getDiscount() > 0 ) {
                     int discount = screenProduct.getDiscount();
-                    out.write(String.format("7;1;0;1;%d", discount));
+                    out.write(String.format("C,1,______,_,__;1;%d;;;;", discount));
+//                  out.write(String.format("|      1       |2|3 |4|5|6|7|8|9|10|
                     out.newLine();
                 }
             }
-            out.write("3");
+            if (cash) {
+                out.write("T,1,______,_,__;0;0;;;;");
+//              out.write("|1                 |2|3|4|5|6|7|8|9|10|
+            } else {
+                out.write("T,1,______,_,__;1;0;;;;");
+//              out.write("|1                 |2|3|4|5|6|7|8|9|10|
+            }
             out.close();
         } catch (Exception e) {
             throw new ServiceException("There was an error while generating the receipt.");
         }
     }
 
-    private void generateCashRegisterFileForTips(Double tips) throws ServiceException {
-
-        tips = tips*100;
-
-        try {
-            File path = new File(CASH_REGISTER_OUT_PATH);
-            if (!path.exists()) {
-                path.mkdir();
-            }
-            File outFile = new File(path + "\\" + CASH_REGISTER_OUT_FILE);
-            FileWriter fileWriter = new FileWriter(outFile);
-            BufferedWriter out = new BufferedWriter(fileWriter);
-
-            out.write(String.format("1;Bacsis;3;5;2;%d;%d;0", tips.intValue(), 1000));
-            out.newLine();
-
-            out.write("3");
-            out.close();
-        } catch (Exception e) {
-            throw new ServiceException("There was an error while generating the receipt.");
-        }
-    }
-
-    private void generateCashRegisterFileCard() throws ServiceException {
-        try {
-            File path = new File(CASH_REGISTER_OUT_PATH);
-            if (!path.exists()) {
-                path.mkdir();
-            }
-            File outFile = new File(path + "\\" + CASH_REGISTER_OUT_FILE);
-            FileWriter fileWriter = new FileWriter(outFile);
-            BufferedWriter out = new BufferedWriter(fileWriter);
-            for (ScreenProduct screenProduct : productList) {
-                if (screenProduct.getProduct().isGold()) {
-                    int priceVal = screenProduct.getProduct().getPrice().multiply(new BigDecimal(100)).intValue();
-                    BigDecimal weight = new BigDecimal(screenProduct.getProduct().getWeight());
-                    weight = weight.multiply(new BigDecimal(1000));
-                    weight = weight.setScale(0, RoundingMode.HALF_UP);
-                    out.write(String.format("1;%s;1;1;1;%d;%s;0", screenProduct.getProduct().getName(), priceVal, weight.toString()));
-                    out.newLine();
-                } else {
-                    int priceVal = screenProduct.getProduct().getPrice().multiply(new BigDecimal(100)).intValue();
-                    int qtyVal = screenProduct.getQuantity() * 1000;
-                    out.write(String.format("1;%s;1;1;1;%d;%d;0", screenProduct.getProduct().getName(), priceVal, qtyVal));
-                    out.newLine();
-                }
-                if (screenProduct.getDiscount() > 0 ) {
-                    int discount = screenProduct.getDiscount();
-                    out.write(String.format("7;1;0;1;%d", discount));
-                    out.newLine();
-                }
-            }
-            int total = (getTotal().multiply(new BigDecimal(100))).intValue();
-            out.write(String.format("5;%d;2", total));
-            //out.write("3");
-            out.close();
-        } catch (Exception e) {
-            throw  new ServiceException("There was an error while generating the receipt.");
-        }
-    }
-
-    private void printReceipt() throws ServiceException {
-        String serialPort = null;
+    private String getProperty(SettingsEnum propertyEnum) throws ServiceException {
+        String fileLocation;
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream(new File("settings.properties")));
-            serialPort = properties.getProperty(SettingsEnum.SERIAL_PORT.toString());
+            properties.load(new FileInputStream(new File(SETTINGS_PROPERTIES)));
+            fileLocation = properties.getProperty(propertyEnum.toString());
         } catch (IOException e) {
-            throw new ServiceException("Can not read serial port setting.");
+            throw new ServiceException("Can not read property.");
         }
-        try {
-            String[] commands = {CASH_REGISTER_OUT_PATH + "Comm2A.exe", "/data_file:" + CASH_REGISTER_OUT_PATH + "cashRegisterOut.txt", "/t", "/ro", "/" + serialPort, "/speed:38400", "/ecr:13", "/num:1", "/o:18", "/err_file:error.err"};
-
-            Process p = Runtime.getRuntime().exec(commands);
-            p.waitFor();
-            File file = new File(CASH_REGISTER_OUT_PATH + "cashRegisterOut.txt");
-//            file.delete();
-        } catch (Exception e) {
-            throw new ServiceException("There was an error while printing the receipt.");
-        }
+        return fileLocation;
     }
 
     public List<SaleDetail> getSaleData(Product product) throws ServiceException {
         try {
-            List<SaleDetail> list = saleDao.getProductSales(product);
-            return list;
+            return saleDao.getProductSales(product);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }

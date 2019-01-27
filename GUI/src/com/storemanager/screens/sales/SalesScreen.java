@@ -32,8 +32,8 @@ public class SalesScreen extends AbstractPanel {
     private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getSize().width - 40;
     private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getSize().height - 100;
 
-    private JButton close, edit, cancel, update, delete, checkout, checkoutCard, clearSearch, tipsCheckout;
-    private JTextField searchCode, quantity, name, code, unitPrice, price, description, stock, discount, tips;
+    private JButton close, edit, cancel, update, delete, checkout, checkoutCard, clearSearch;
+    private JTextField searchCode, quantity, name, code, unitPrice, price, description, stock, discount;
     private JLabel quantityLabel, unitPriceLabel, discountLabel;
     private JPanel searchPanel, searchPanelBtn, editPanel, imagePanel, actionPanel;
     private JScrollPane scrollPane;
@@ -264,19 +264,6 @@ public class SalesScreen extends AbstractPanel {
         checkoutCard.setSize(ButtonSizeEnum.EXTRA_LARGE_CHECKOUT.getSize());
         checkoutCard.addActionListener(listener);
         actionPanel.add(checkoutCard);
-
-        tipsCheckout = new ImageButton(ButtonEnum.CHECKOUT_TIPS, this);
-        tipsCheckout.setLocation(180, 135);
-        tipsCheckout.setSize(ButtonSizeEnum.EXTRA_LARGE_CHECKOUT.getSize());
-        tipsCheckout.addActionListener(listener);
-        actionPanel.add(tipsCheckout);
-
-        Font newFieldFont = new Font(searchCode.getFont().getName(), searchCode.getFont().getStyle(), 30);
-        tips = new JTextField();
-        tips.setBounds(10, 140, 155, 50);
-        tips.setFont(newFieldFont);
-        tips.getDocument().addDocumentListener(new QuantityListener());
-        actionPanel.add(tips);
 
         this.add(actionPanel);
         this.repaint();
@@ -541,7 +528,6 @@ public class SalesScreen extends AbstractPanel {
             searchCode.requestFocus();
         } else if (trigger.getCommand().equals(ButtonEnum.CLEAR_SEARCH.getCommand())) {
             searchCode.setText("");
-            tips.setText("");
             editProduct(null);
             isUpdateProduct = false;
             searchCode.requestFocus();
@@ -714,17 +700,6 @@ public class SalesScreen extends AbstractPanel {
                 editProduct(null);
                 refreshProductList();
                 searchCode.requestFocus();
-            } else if (button.getCommand().equals(ButtonEnum.CHECKOUT_TIPS.getCommand())) {
-                try {
-                    String tipsStr = tips.getText();
-                    if (!Strings.isEmpty(tipsStr)) {
-                        service.createTipsPrint(tipsStr);
-                    } else {
-                        Message.showError("Nu ati setat valoarea pentru bacsis!");
-                    }
-                } catch (ServiceException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage());
-                }
             }
         }
     }
